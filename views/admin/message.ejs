@@ -1,0 +1,29 @@
+<%- include('../includes/head.ejs') %>
+</head>
+
+<body>
+  <div class="container">
+    <%- include('../includes/navigation.ejs') %>
+    <div class="page-container">
+      <div class="post-form-container"> 
+        <h1>Viestit</h1>
+        <div class="message-box base">
+            <div class="message-box-left">
+                <div class="chat-user"><h3>Johanna</h3></div>
+            </div>
+            <div class="message-box-right">
+                <div class="header-user"><h3 id="selected-chat-user">Johanna</h3 id="selected-chat-user"></div>
+                <div class="message-content">
+
+                </div>
+                <div class=message-text>
+                    <div class="text-field base" ><textarea id="message" name="message" rows="5" placeholder="Kirjoita viestisi tähän..."></textarea></div>
+                </div>
+
+            </div>
+        </div>
+            
+    </div>  
+    </div> 
+  </div>
+<%- include('../includes/end.ejs') %>

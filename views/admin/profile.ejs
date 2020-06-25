@@ -1,0 +1,63 @@
+<%- include('../includes/head.ejs') %>
+</head>
+
+<body>
+  <div class="container">
+    <%- include('../includes/navigation.ejs') %>
+    <div class="page-container">
+        <div class="toolbar">
+            <ul class="site-nav">
+                <li class=""><a href="/admin/waiting-posts" title="Odottavat ilmoitukset"> Odottavat ilmoitukset</a></li>
+                <li class=" ownpost"><a href="/admin/post-list" title="Omat ilmoitukset"> Omat ilmoitukset</a></li>
+                <li class="active owninfo"><a href="/admin/profile" title="Omat tiedot">Omat tiedot</a></li>
+                <li class="signout"><a href="#" title="Kiraudu ulos">Kirjaudu ulos</a></li>
+            </ul>
+          </div>
+    <div class="login-form-container post-form-container"> 
+        <h1>Muokkaa tietojasi</h1>
+        <form method="POST" action="profileupdatesuccess.html">
+            <div class="post-module">
+                <label for="tunnus">Käyttäjätunnus</label>
+                <div class="text-field dropdown base">
+                    <p>thi.nguyen@edu.amiedu.fi</p>
+                </div>
+                <label for="kunta">Kunta*</label>
+                <div class="text-field dropdown base">
+                    <select name="kunta">
+                        <option value="valitse">Valitse kunta</option>
+                        <option value="askola">Askola</option>
+                        <option  value="espoo">Espoo</option>
+                        <option  value="hanko">Hanko</option>
+                        <option value="helsinki" selected>Helsinki</option>
+                        <option  value="hyvinkaa">Hyvinkää</option>
+                        <option  value="inkoo">Inkoo</option>
+                    </select>
+                </div>
+                <label for="nimi">Nimi*</label>
+                <div class="text-field base" ><input value="Liem"id="nimi" type="text" name="nimi"></div>
+                
+                <label for="postinumero">Postinumero</label>
+                <div class="text-field base" ><input id="postinumero" type="text" name="postinumero"></div>
+                
+                <label for="puhelin">Puhelinnumero</label>
+                <div class="text-field base" ><input value="0345678910"id="puhelin" type="text" name="puhelin"></div>
+                
+                <label for="paiva">Syntynmäpäivä</label>
+                <div class="text-field base" ><input id="paiva" type="date" name="paiva"></div>
+                <label for="sukupuoli">Sukupuoli</label>
+                <div class="text-field dropdown base">
+                    <select name="koko">
+                        <option value="valitse koko">Valitse sukupuoli</option>
+                        <option value="mies">Mies</option>
+                        <option  value="nainen">Nainen</option>
+                    </select>
+                </div>
+                <button class="button-green button login-button" type="submit">Päivitä tiedot</button>   
+            
+                
+            </div>
+        </form>     
+    </div>
+    </div>
+  </div>
+  <%- include('../includes/end.ejs') %>

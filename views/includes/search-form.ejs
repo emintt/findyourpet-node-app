@@ -1,0 +1,59 @@
+<div class="search-form">
+  <div class="form-container"> 
+      <form method="POST" action="loggedresults.html" class="dog-search"> 
+          <div class="search-module">
+              <div class="search-location text-field base">
+                  <input id="location" type="text" name="location" placeholder= "Postinumero">
+              </div>
+              <div class="filterone text-field dropdown base">
+                  <select>
+                      <option  value="kaikki">Kaikki ilmoitustyypit</option>
+                      <option value="loyty">Löydetty lemmikit</option>
+                      <option value="kadoneet">Kadonneet lemmikit</option>
+                  </select>
+              </div>
+              <div class="filtertwo text-field dropdown base">
+                  <select>
+                      <option value="kaikki">Kaikki rodut</option>
+                      <option value="exotic">Exotic</option>
+                      <option  value="turkkilainen van">Turkkilainen van</option>
+                      <option  value="ameriacan curl">American Curl</option>
+                      <option value="laPerm">LaPerm</option>
+                      <option  value="maine coon">Maine Coon</option>
+                      <option  value="neva masquerade">Neva Masquerade</option>
+
+                  </select>
+              </div>
+              <div class="filterthree dropdown base">
+                  <!--input id="color" type="text" name="color" placeholder="Kaikki värit"-->
+                  <select>
+                      <option value="kaikki">Kaikki värit</option>
+                      <option value="musta">Musta</option>
+                      <option  value="ruskea">Ruskea</option>
+                      <option  value="kultainen">Kultainen</option>
+                      <option value="punainen">Punainen</option>
+                      <option  value="harmaa">Harmaa</option>
+                      <option  value="valkoinen">Valkoinen</option>
+                      <option value="oranssi">Oranssi</option>
+                      <option  value="monivarinen">Monivärinen</option>
+                  </select>
+              </div>
+              <div class="search-pettype base">
+                  <label class="radio-container"><input type="radio" name="pettype" value="koira">Koira</label>
+                  <label class="radio-container"><input checked="checked" type="radio" name="pettype" value="kissa">Kissa</label>
+                  <label class="radio-container"><input type="radio" name="pettype" value="muu">Muu lemmikki</label>
+              </div>
+              <div class="search-gender base">
+                  <label class="radio-container"><input type="radio" name="gender" value="uros">Uros</label>
+                  <label class="radio-container"><input checked="checked" type="radio" name="gender" value="naaras">Naaras</label>
+              </div>
+              <div class="search-button base">
+                  <button class="button-green button" type="submit">Hae</button>   
+              </div>
+              <div class="image-container">
+                  <img src="img/cutedog2.png" alt="cute dog" class="search-image">
+              </div>
+          </div>
+      </form>     
+  </div>
+</div>
