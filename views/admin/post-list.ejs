@@ -5,22 +5,18 @@
   <div class="container">
     <%- include('../includes/navigation.ejs') %>
     <div class="page-container">
-      <div class="toolbar">
-        <ul class="site-nav">
-            <li class=""><a href="/admin/waiting-posts" title="Odottavat ilmoitukset"> Odottavat ilmoitukset</a></li>
-            <li class="active ownpost"><a href="/admin/post-list" title="Omat ilmoitukset"> Omat ilmoitukset</a></li>
-            <li class="owninfo"><a href="/admin/profile" title="Omat tiedot">Omat tiedot</a></li>
-            <li class="signout"><a href="#" title="Kiraudu ulos">Kirjaudu ulos</a></li>
-        </ul>
-      </div>
+      <%- include('../includes/navigation-2.ejs') %>
       <div class="pets">
-        <a href="#.html" class="media tile">
+        <a href="/admin/edit-post" class="media tile">
             <img class="media-image" src="img/250x250/cat2.jpg" alt="cat2">
             <div class="media-body">
                 <p>Uros, nuori</p><br>
                 <p>Alajärvi Keskus, Alajärvi</p><br>
                 <p>Hävinnyt 09/12/2019</p>
-                <div class="edit-post button button-green">Muokaka</div>
+                <div class="edit-post">
+                  <button class="button-green button">Poista</button>
+                  <button class="button-green button">Muokata</button>
+                </div>
             </div>
         </a>
       </div>

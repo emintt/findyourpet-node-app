@@ -1,0 +1,19 @@
+<div class="toolbar">
+  <ul class="site-nav">
+      <li class="<%= path === '/waiting-posts' ? 'active' : '' %>">
+        <a  href="/admin/waiting-posts" title="Odottavat ilmoitukset"> Odottavat ilmoitukset</a>
+      </li>
+      <li class="ownpost <%= path === '/post-list' ? 'active' : '' %>">
+        <a href="/admin/post-list" title="Omat ilmoitukset"> Omat ilmoitukset</a>
+      </li>
+      <li class="<%= path === '/saved-posts' ? 'active' : '' %>">
+        <a href="/admin/saved-posts" title="Ilmoitusvahdit"> Ilmoitusvahdit </a>
+      </li>
+      <li class="owninfo">
+        <a class="" href="/admin/profile" title="Omat tiedot">Omat tiedot</a>
+      </li>
+      <li class="signout">
+        <a href="#" title="Kiraudu ulos">Kirjaudu ulos</a>
+      </li>
+  </ul>
+</div>

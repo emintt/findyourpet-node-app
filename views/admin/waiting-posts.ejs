@@ -5,25 +5,30 @@
   <div class="container">
     <%- include('../includes/navigation.ejs') %>
     <div class="page-container">
-      <div class="toolbar">
-        <ul class="site-nav">
-            <li class="active"><a href="/admin/waiting-posts" title="Odottavat ilmoitukset"> Odottavat ilmoitukset</a></li>
-            <li class="ownpost"><a href="/admin/post-list" title="Omat ilmoitukset"> Omat ilmoitukset</a></li>
-            <li class="owninfo"><a href="/admin/profile" title="Omat tiedot">Omat tiedot</a></li>
-            <li class="signout"><a href="#" title="Kiraudu ulos">Kirjaudu ulos</a></li>
-        </ul>
-      </div>
+      <%- include('../includes/navigation-2.ejs') %>
       <div class="pets">
         <% if (posts.length > 0) { %>
           <% for (let post of posts) { %>
-            <a href="logeddetail.html" class="media tile">
-              <img class="media-image" src="img/250x250/cat1.jpg" alt="cat1">
-              <div class="media-body">
-                <p><%= post.gender %></p><br>
-                <p><%= post.city%></p><br>
-                <p><%= post.postType%> <%= post.date%></p>
+            <div class="media tile">
+              <a href="/admin/waiting-posts/<%= post.id %>" >
+                <img class="media-image" src="img/250x250/cat1.jpg" alt="cat1">
+                <div class="media-body">
+                  <p><%= post.gender %></p><br>
+                  <p><%= post.postcode%> <%= post.city%></p><br>
+                  <p><%= post.postType%> <%= post.petDate%></p>
+                </div>
+              </a>
+              <div class="media-action">
+                <a href="/admin/edit-post/<%= post.id %>?edit=true" class="button-green">Muokata</a>
+                <form action="/admin/delete-post" method="POST">
+                  <input type="hidden" value="<%= post.id %>" name="postId">
+                  <button class="button-green" type="submit">Poista</button>
+                </form>
               </div>
-            </a>
+              
+            </div>
+              
+            
           <% } %>
         <% } else {%>
           <h1>No post</h1>

@@ -9,6 +9,7 @@ const router = express.Router();
 
 router.get('/', webController.getIndex);
 
-router.get('/post-detail', );
+router.get('/post-detail');
+router.get('/saved-posts-delete-item', webController.postSavedPostsDeleteItem); 
 
 module.exports = router;

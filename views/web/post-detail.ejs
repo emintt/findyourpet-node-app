@@ -9,28 +9,30 @@
         <div class="detail-image-container"><img class="detail-image" src="img/300x400/cat4a.jpg" alt="cat4a"></div>
         <div class="detail-info">
             <div class="detail-info-1">
-                <h2>Kadonnut kissa</h2>
-                <p>Ilmoitus tyyppi: Kadonnut</p>
-                <p>Kadonnut: 09/12/2019</p>
-                <p>Sukupuoli: uros</p>
+                <h2><%= post.title %></h2>
+                <p>Ilmoitus tyyppi: <%= post.postTypeId %></p>
+                <p><%= post.postTypeId %>: <%= post.petDate %></p>
+                <p>Sukupuoli: <%= post.gender %></p>
             </div>
             <div class="detail-info-2">
                 <p class="desktop-only"> <h2>&nbsp;</h2> </p>
-                <p>Ilmoitajan nimi: Liem</p>
-                <p>Kunta: Alajärvikeskus, Alajärvi</p>
-                <p>Ilmoitus jätetty: 10/12/2019</p>
+                <p>Ilmoitajan nimi: <%= post.memberId %></p>
+                <p>Kunta: <%= post.postcodeAreaId %>, <%= post.cityId %></p>
+                <p>Ilmoitus jätetty: <%= post.createdDate %></p>
             </div>  
         </div>
         <div class="detail-content">
-            <p>Valkoinen/musta kissa häivinyt 9/12/2019. Erittäin lempeä ja ihmisystävällinen. Havainnot olisi terevetulleet.</p>
+            <p><%= post.text %></p>
         </div>
+        <%- include('../includes/save-post-form') %>
+        <a href=logindetail.html><div class="message-button edit-post button button-green">Lähetä viesti ilmoitajalle</div></a>
         <form class="send-message" method="POST" action="message_success.html">
           <div class="send-message-container">
               <h3>Lähetä viesti ilmoitajalle</h3>
-              <label for="nimi">Nimi</label>
-              <div class="text-field base" ><input id="nimi" type="text" name="nimi"></div>
-              <label for="viesti">Viesti</label>
-              <div class="text-field base" ><textarea id="sendmessage-viesti" name="viesti" rows="5"></textarea></div>
+              <label for="name">Nimi</label>
+              <div class="text-field base" ><input id="nimi" type="text" name="name"></div>
+              <label for="message">Viesti</label>
+              <div class="text-field base" ><textarea id="sendmessage-viesti" name="message" rows="5"></textarea></div>
               <a href=message_success.html><div class="message-button edit-post button button-green">Lähetä viesti ilmoitajalle</div></a>
           </div>
         </form>
@@ -46,5 +48,5 @@
       </div>  
     </div>
   </div>
-  <%- include('./includes/end.ejs')%>
+  <%- include('../includes/end.ejs')%>
 

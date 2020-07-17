@@ -12,12 +12,12 @@
                     <h2>Viimeaikaiset lemmikit</h2>
                 </div>
                 <% for (let post of posts) { %>
-                  <a href="logeddetail.html" class="media tile">
-                      <img class="media-image" src="img/250x250/cat1.jpg" alt="cat1">
+                  <a href="/admin/waiting-posts/<%= post.id %>" class="media tile">
+                      <img class="media-image" src="post.imageUrl" alt="cat1">
                       <div class="media-body">
                         <p><%= post.gender %></p><br>
                         <p><%= post.city%></p><br>
-                        <p><%= post.postType%> <%= post.date%></p>
+                        <p><%= post.postType%> <%= post.petDate%></p>
                       </div>
                   </a>
                 <% } %>

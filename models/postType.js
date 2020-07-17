@@ -2,19 +2,17 @@ const Sequelize = require('sequelize');
 
 const sequelize = require('../util/database');
 
-const Post = sequelize.define('post', {
+const PostType = sequelize.define('postType', {
   id: {
     type: Sequelize.INTEGER,
     autoIncrement: true,
     allowNull: false,
     primaryKey: true
   },
-  petDate: Sequelize.DATEONLY,
-  petColor: Sequelize.STRING(30),
-  gender: Sequelize.TINYINT
-}, {
-  timestamps: true,
-  paranoid: true
+  name: {
+    type: Sequelize.STRING(30),
+    allowNull: false
+  }
 });
 
-module.exports = Post;
+module.exports = PostType;
