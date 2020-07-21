@@ -7,12 +7,14 @@ const PetType = sequelize.define('petType', {
     type: Sequelize.INTEGER,
     allowNull: false,
     autoIncrement: true,
-    primaryKey: true
+    primaryKey: true,
   },
   name: {
     type: Sequelize.STRING(100),
     allowNull: false
   }
+}, {
+  tableName: 'pet_type'
 });
 
 module.exports = PetType;

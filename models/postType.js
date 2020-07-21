@@ -13,6 +13,8 @@ const PostType = sequelize.define('postType', {
     type: Sequelize.STRING(30),
     allowNull: false
   }
+}, {
+  tableName: 'post_type'
 });
 
 module.exports = PostType;

@@ -9,7 +9,10 @@ const Post = sequelize.define('post', {
     allowNull: false,
     primaryKey: true
   },
-  petDate: Sequelize.DATEONLY,
+  petDate: {
+    type: Sequelize.DATEONLY,
+    field: 'pet_date'
+  },
   petColor: Sequelize.STRING(30),
   gender: Sequelize.TINYINT
 }, {

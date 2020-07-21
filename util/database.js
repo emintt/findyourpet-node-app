@@ -6,7 +6,8 @@ const sequelize = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.passw
   host: dbConfig.host,
   define: {
     freezeTableName: true,
-    timestamps: false
+    timestamps: false,
+    underscored: true
   }
 });
 

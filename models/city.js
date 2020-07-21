@@ -6,7 +6,8 @@ const City = sequelize.define('city', {
   name: {
     type: Sequelize.STRING,
     allowNull: false,
-    primaryKey: true
+    primaryKey: true,
+    unique: true
   }
 });
 

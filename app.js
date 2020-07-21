@@ -13,12 +13,13 @@ const sequelize = require('./util/database');
 const Region = require('./models/region');
 const City = require('./models/city');
 const PostcodeArea = require('./models/postcodeArea');
-const Image = require('./models/image');
 const Member = require('./models/member');
-const Message = require('./models/message');
 const PetType = require('./models/petType');
-const Post = require('./models/post');
 const PostType = require('./models/postType');
+const Post = require('./models/post');
+const Image = require('./models/image');
+const Message = require('./models/message');
+
 
 
 app.set('view engine', 'ejs');
@@ -32,36 +33,36 @@ app.use('/admin', adminRoutes);
 app.use(webRoutes);
 app.use(errorController.get404);
 
-Region.hasMany(City, { foreignKey: 'regionName', sourceKey: 'name' });
-City.belongsTo(Region, { foreignKey: 'regionName', targetKey: 'name' });
+Region.hasMany(City, { foreignKey: { name: 'regionName', allowNull: false } });
+City.belongsTo(Region, { foreignKey: { name: 'regionName', allowNull: false } });
 
-City.hasMany(PostcodeArea, { foreignKey: 'cityName', sourceKey: 'name' });
-PostcodeArea.belongsTo(City, { foreignKey: 'cityName', targetKey: 'name' });
+City.hasMany(PostcodeArea, { foreignKey: { name: 'cityName', allowNull: false } });
+PostcodeArea.belongsTo(City, { foreignKey: { name: 'cityName', allowNull: false } });
 
-PostcodeArea.hasMany(Post, { foreignKey:'areaName' });
-Post.belongsTo(PostcodeArea, { foreignKey: 'areaName' });
+Post.belongsTo(PostcodeArea, { foreignKey: { name: 'postcode', allowNull: false } });
+PostcodeArea.hasMany(Post, { foreignKey:{ name: 'postcode', allowNull: false } });
 
-PostType.hasMany(Post);
-Post.belongsTo(PostType);
+PostType.hasMany(Post, { foreignKey: { allowNull: false } });
+Post.belongsTo(PostType, { foreignKey: { allowNull: false } });
+
+PetType.hasMany(Post, { foreignKey: { allowNull: false } });
+Post.belongsTo(PetType, { foreignKey: { allowNull: false } });
 
 Member.hasMany(Post, { foreignKey: { allowNull: false }, onDelete: 'CASCADE'});
 Post.belongsTo(Member);
 
-Post.hasMany(Message, { foreignKey: { allowNull: false }});
-Message.belongsTo(Post, { foreignKey: { allowNull: false }});
-
 Member.hasMany(Message, { foreignKey: { allowNull: false }});
 Message.belongsTo(Member, { foreignKey: { allowNull: false }});
 
-PetType.hasMany(Post, { foreignKey: { allowNull: false }});
-Post.belongsTo(PetType, { foreignKey: { allowNull: false }});
+Post.hasMany(Message, { foreignKey: { allowNull: false }});
+Message.belongsTo(Post, { foreignKey: { allowNull: false }});
 
 Post.hasMany(Image, { foreignKey: { allowNull: false }});
 Image.belongsTo(Post, { foreignKey: { allowNull: false }});
 
 
 sequelize
-  .sync({ force: true })
+  .sync()
   .then(result => {
     console.log(result);
     app.listen(3000); 

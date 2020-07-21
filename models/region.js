@@ -6,7 +6,8 @@ const Region = sequelzie.define('region', {
   name: {
     type: Sequelize.STRING,
     allowNull: false,
-    primaryKey: true
+    primaryKey: true,
+    unique: true
   }
 });
 
