@@ -17,11 +17,23 @@ const Member = sequelize.define('member', {
     type: Sequelize.STRING,
     allowNull: false
   },
-  firstName: Sequelize.STRING(100),
-  lastName: Sequelize.STRING(100),
-  phoneNumber: Sequelize.STRING(15)
+  firstName: {
+    type: Sequelize.STRING(100),
+    field: 'first_name'
+  },
+  
+  lastName: {
+    type: Sequelize.STRING(100),
+    field: 'last_name'
+  },
+  phoneNumber: {
+    type: Sequelize.STRING(100),
+    field: 'phone_number'
+  }
 }, {
-  timestamps: true
+  timestamps: true,
+  createdAt: 'created_at',
+  updatedAt: 'updated_at'
 });
 
 module.exports = Member;

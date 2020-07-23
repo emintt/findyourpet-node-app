@@ -10,7 +10,8 @@ const Image = sequelize.define('image', {
     primaryKey: true
   },
   imageUrl: {
-    type: Sequelize.STRING(1024)
+    type: Sequelize.STRING(1024),
+    field: 'image_url'
   }
 });
 

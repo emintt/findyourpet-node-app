@@ -11,21 +11,28 @@ exports.getAddPost = (req, res, next) => {
 
 exports.postAddPost = (req, res, next) => {
   const title = req.body.title;
-  const text = req.body.text;
-  const postTypeId = req.body.postTypeId;
-  const petTypeId = req.body.petTypeId;
+  const content = req.body.content;
   const petDate = req.body.petDate;
   const petColor = req.body.petColor;
   const gender = req.body.gender;
-  const memberId = req.body.memberId;
-  const postcodeAreaId = req.body.postcodeAreaId;
-  const cityId = req.body.cityId;
+  const postcode = req.body.postcode;
+  const postTypeId = req.body.postTypeId;
+  const petTypeId = req.body.petTypeId;
   const imageUrl = req.body.imageUrl;
-  const createdDate = req.body.createdDate;
-  const updatedDate = req.body.updatedDate;
-  const post = new Post(null, title, text, postTypeId, petTypeId, petDate, petColor, gender, memberId, postcodeAreaId, cityId, imageUrl, createdDate, updatedDate);
-  post.save()
-    .then(() => {
+  req.member
+    .createPost({
+      title: title,
+      content: content,
+      petDate: petDate,
+      petColor: petColor,
+      gender: gender,
+      postcode: postcode,
+      postTypeId: postTypeId,
+      petTypeId: petTypeId
+    })
+    .then(result => {
+      console.log(result);
+      console.log('Post Created');
       res.redirect('admin/waiting-posts');
     })
     .catch(err => console.log(err));

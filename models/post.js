@@ -9,15 +9,30 @@ const Post = sequelize.define('post', {
     allowNull: false,
     primaryKey: true
   },
+  title: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    field: 'title'
+  },
+  content: {
+    type: Sequelize.TEXT,
+    allowNull: false,
+    field: 'content'
+  },
   petDate: {
     type: Sequelize.DATEONLY,
     field: 'pet_date'
   },
-  petColor: Sequelize.STRING(30),
-  gender: Sequelize.TINYINT
+  petColor: {
+    type: Sequelize.STRING(30),
+    field: 'pet_color'
+  },
+  gender: Sequelize.TINYINT //0: uros, 1: naaras
 }, {
   timestamps: true,
-  paranoid: true
+  paranoid: true,
+  createdAt: 'created_at', 
+  updatedAt: 'updated_at'
 });
 
 module.exports = Post;

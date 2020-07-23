@@ -10,15 +10,18 @@ const webRoutes = require('./routes/web');
 
 const errorController = require('./controllers/error');
 const sequelize = require('./util/database');
-const Region = require('./models/region');
-const City = require('./models/city');
-const PostcodeArea = require('./models/postcodeArea');
+
+
+
 const Member = require('./models/member');
 const PetType = require('./models/petType');
 const PostType = require('./models/postType');
 const Post = require('./models/post');
 const Image = require('./models/image');
 const Message = require('./models/message');
+const PostcodeArea = require('./models/postcodeArea');
+const City = require('./models/city');
+const Region = require('./models/region');
 
 
 
@@ -28,6 +31,15 @@ app.set('views', 'views');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use((req, res, next) => {
+  Member.findByPk(1)
+    .then(member => {
+      req.member = member;
+      next();
+    })
+    .catch(err => console.log(err));
+});
 
 app.use('/admin', adminRoutes);
 app.use(webRoutes);
@@ -64,8 +76,18 @@ Image.belongsTo(Post, { foreignKey: { allowNull: false }});
 sequelize
   .sync()
   .then(result => {
-    console.log(result);
-    app.listen(3000); 
+    //console.log(result);
+    return Member.findByPk(1);
+  })
+  .then( member => {
+    if (!member) {
+      return Member.create({email: 'elminguyen@gmail.com', password: '123456', firstName: 'Liem', lastName: 'Nguyen', phoneNumber: '0123456789' });
+    }
+    return member;
+  })
+  .then(member => {
+    //console.log(member);
+    app.listen(3000);
   })
   .catch(err => {console.log(err)});
 

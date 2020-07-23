@@ -33,14 +33,14 @@
                             </select>
                         </div>
                         
-                        <label for="postcodeAreaId">Postinumero*</label>
-                        <div class="text-field base" ><input id="postcodeAreaId" type="text" name="postcodeAreaId" value="<% if (editing) { %><%=post.postcode%><% } %>"></div>
+                        <label for="postcode">Postinumero*</label>
+                        <div class="text-field base" ><input id="postcode" type="text" name="postcode" value="<% if (editing) { %><%=post.postcode%><% } %>"></div>
                         <label for="petDate">Kadonneet tai löytyy päivämäärä*</label>
                         <div class="text-field base" ><input id="date" type="date" name="petDate" value="<% if (editing) { %><%=post.petDate%><% } %>"></div>
                         <label for="petTypeId">Lemmikin tyyppi</label>
                         <div class="text-field dropdown base">
                             <select name="petTypeId">
-                            <% let typeOptions = ["valitse tyyppi", "koira", "kissa", "muu"];
+                            <% let typeOptions = ["Valitse tyyppi", "Koira", "Kissa", "Muu"];
                             for (let i = 0; i < typeOptions.length; i++) {
                                 if (editing) {
                                     let selected = (post.petTypeId === i) ? "selected" : ""; %>
@@ -88,8 +88,8 @@
                         </div>
                         <label for="title">Otsikko</label>
                         <div class="text-field base" ><input id="title" type="text" name="title" value="<% if (editing) { %><%=post.title%><% } %>"></div>
-                        <label for="text">Ilmoitusteksti*</label>
-                        <div class="text-field base" ><textarea id="postText" name="text" rows="5"><% if (editing) { %><%=post.postText%><% } %></textarea></div>
+                        <label for="content">Ilmoitusteksti*</label>
+                        <div class="text-field base" ><textarea id="postText" name="content" rows="5"><% if (editing) { %><%=post.postText%><% } %></textarea></div>
                         <label for="imageUrl">Kuva*</label>
                         <div class="" ><input id="kuva" type="text" name="imageUrl" value="<% if (editing) { %><%= post.imageUrl %><% } %>"></div>
                         
