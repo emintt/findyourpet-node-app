@@ -11,25 +11,30 @@
                     <div class="post-module">
                         <label for="postTypeId">Ilmoitus tyyppi*</label>
                         <div class="text-field dropdown base">
-                            <select name="postTypeId" value="<% if (editing) { %><%=post.postType%><% } %>">
-                                <!-- <option value=""> Valitse ilmoitustyyppi</option> -->
-                                <option  value="1">Löydetty</option>
-                                <option value="2">Kadonnut</option>
+                            <select name="postTypeId" value="<% if (editing) { %><%=post.postType.name%><% } %>">
+                                <option value="0"> Valitse ilmoitustyyppi</option>
+                                <% for (let i = 0; i < postTypes.length; i++) {
+                                    if (editing) {
+                                        let selected = (post.postTypeId === postTypes[i].id) ? "selected" : ""; %>
+                                        <option value="<%=postTypes[i].id%>" <%=selected%>><%=postTypes[i].name%></option>
+                                    <% } else { %>
+                                    <option value="<%=postTypes[i].id%>"><%=postTypes[i].name%></option>
+                                    <% } %>
+                                <% } %>
                             </select>
                         </div>
                         <label for="cityId">Kunta*</label>
                         <div class="text-field dropdown base">
                             <select name="cityId">
-                                <!-- <option value="valitse kunta">Valitse kunta</option> -->
-                                <option value="1">Akaa</option>
-                                <option  value="2">Alajärvi</option>
-                                <option  value="3">Alavus</option>
-                                <option value="4">Espoo</option>
-                                <option  value="5">Forssa</option>
-                                <option  value="6">Haapajärvi</option>
-                                <option  value="7">Haapavesi</option>
-                                <option  value="8">Hamina</option>
-                                <option  value="9">Hanko</option>
+                                <option value="valitse kunta">Valitse kunta</option>
+                                <% for (let i = 0; i < cities.length; i++) {
+                                    if (editing) {
+                                        let selected = (post.postcodeArea.cityName === cities[i].name) ? "selected" : ""; %>
+                                        <option value="<%=cities[i].name%>" <%=selected%>><%=cities[i].name%></option>
+                                    <% } else { %>
+                                    <option value="<%=cities[i].name%>"><%=cities[i].name%></option>
+                                    <% } %>
+                                <% } %>
                             </select>
                         </div>
                         
@@ -40,13 +45,13 @@
                         <label for="petTypeId">Lemmikin tyyppi</label>
                         <div class="text-field dropdown base">
                             <select name="petTypeId">
-                            <% let typeOptions = ["Valitse tyyppi", "Koira", "Kissa", "Muu"];
-                            for (let i = 0; i < typeOptions.length; i++) {
+                                <option value="Valitse tyyppi">Valitse tyyppi</option>
+                            <% for (let i = 0; i < petTypes.length; i++) {
                                 if (editing) {
-                                    let selected = (post.petTypeId === i) ? "selected" : ""; %>
-                                    <option value="<%=i%>" <%=selected%>><%=typeOptions[i]%></option>
+                                    let selected = (post.petTypeId === petTypes[i].id) ? "selected" : ""; %>
+                                    <option value="<%=petTypes[i].id%>" <%=selected%>><%=petTypes[i].name%></option>
                                 <% } else { %>
-                                <option value="<%=i%>"><%=typeOptions[i]%></option>
+                                <option value="<%=petTypes[i].id%>"><%=petTypes[i].name%></option>
                                 <% } %>
                             <% } %>
                             
@@ -54,7 +59,7 @@
                         </div>
                         <label for="petColor">Lemmikin väri</label>
                         <div class="text-field dropdown base">
-                            <select name="petColor" value="<% if (editing) { %><%=post.color%><% } %>">
+                            <select name="petColor" value="<% if (editing) { %><%=post.petColor%><% } %>">
                                 <option value="kaikki">Kaikki värit</option>
                                 <option value="musta">Musta</option>
                                 <option  value="ruskea">Ruskea</option>
@@ -66,15 +71,24 @@
                                 <option  value="monivarinen">Monivärinen</option>
                             </select>
                         </div>
-                        <label for="gender">Lemmikin sukupuoli</label>
+                        <label for="petGenderId">Lemmikin sukupuoli</label>
                         <div class="text-field dropdown base">
-                            <select name="gender" value="<% if (editing) { %><%=post.gender%><% } %>"><% if (editing) { %><%=post.gender%><% } %>
-                                <!-- <option value="valitse sukupuoli">Valitse sukupuoli</option> -->
-                                <option value="0">Uros</option>
-                                <option  value="1">Naaras</option> 
+                            <select name="petGenderId" ><% if (editing) { %><%=post.gender%><% } %>
+                                <option value="0">Valitse sukupuoli</option>
+                                <% for (let i = 0; i < petGenders.length; i++) {
+                                    if (editing) {
+                                        let selected = (post.petGenderId === petGenders[i].id) ? "selected" : ""; %>
+                                        <option value="<%=petGenders[i].id%>" <%=selected%> ><%=petGenders[i].name%></option>
+                                    <% } else { %>
+                                        <option value="<%=petGenders[i].id%>"> <%=petGenders[i].name%> </option>
+                               
+                                    <% } %>
+                                <% } %>
+                               
+                                
                             </select>
                         </div>
-                        <label for="breed">Lemmikin rotu</label>
+                        <!-- <label for="breed">Lemmikin rotu</label>
                         <div class="text-field dropdown base">
                             <select name="breed" value="<% if (editing) { %><%=post.breed%><% } %>">
                                 <option value="valitse rotu">Valitse rotu</option>
@@ -85,11 +99,11 @@
                                 <option  value="maine coon">Maine Coon</option>
                                 <option  value="neva masquerade">Neva Masquerade</option>
                             </select>
-                        </div>
+                        </div> -->
                         <label for="title">Otsikko</label>
                         <div class="text-field base" ><input id="title" type="text" name="title" value="<% if (editing) { %><%=post.title%><% } %>"></div>
                         <label for="content">Ilmoitusteksti*</label>
-                        <div class="text-field base" ><textarea id="postText" name="content" rows="5"><% if (editing) { %><%=post.postText%><% } %></textarea></div>
+                        <div class="text-field base" ><textarea id="postText" name="content" rows="5"><% if (editing) { %><%=post.content%><% } %></textarea></div>
                         <label for="imageUrl">Kuva*</label>
                         <div class="" ><input id="kuva" type="text" name="imageUrl" value="<% if (editing) { %><%= post.imageUrl %><% } %>"></div>
                         

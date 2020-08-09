@@ -157,8 +157,8 @@ padding: 0;
  grid-template-areas: 
       'location filterone'
       '. .'
-      'filtertwo filterthree'
-      '. .'
+      /* 'filtertwo filterthree'
+      '. .' */
       'pettype pettype'
       'gender gender'
       '. .'
@@ -176,7 +176,7 @@ padding: 0;
   z-index: 3;
 }
 
-.filtertwo {
+/* .filtertwo {
   grid-area: filtertwo;
   z-index: 3;
 }
@@ -184,7 +184,7 @@ padding: 0;
 .filterthree {
   grid-area: filterthree;
   z-index: 3;
-}
+} */
 
 .search-pettype {
   grid-area: pettype;

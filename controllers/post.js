@@ -1,12 +1,32 @@
 const Post = require('../models/post');
+const PetType = require('../models/petType');
+const PostType = require('../models/postType');
+const PetGender = require('../models/petGender');
+const City = require('../models/city');
+const PostcodeArea = require('../models/postcodeArea');
 const SavedPosts = require('../models/saved-posts');
 
 
 exports.getAddPost = (req, res, next) => {
-  res.render('admin/edit-post', {
-    pageTitle: 'Add post',
-    editing: false
+  const postTypes = PostType.findAll();
+  const petTypes = PetType.findAll();
+  const petGenders = PetGender.findAll();
+  const cities = City.findAll({
+    order: [['name', 'ASC']]
   });
+  Promise.all([postTypes, petTypes, petGenders, cities])
+    .then(([postTypes, petTypes, petGenders, cities]) => {
+      console.log(JSON.stringify(petGenders));
+      res.render('admin/edit-post', {
+        pageTitle: 'Add post',
+        editing: false,
+        postTypes: postTypes,
+        petTypes: petTypes,
+        petGenders: petGenders,
+        cities: cities
+      });
+    })
+    .catch(err => {console.log(err)});
 } 
 
 exports.postAddPost = (req, res, next) => {
@@ -14,7 +34,7 @@ exports.postAddPost = (req, res, next) => {
   const content = req.body.content;
   const petDate = req.body.petDate;
   const petColor = req.body.petColor;
-  const gender = req.body.gender;
+  const petGenderId = req.body.petGenderId;
   const postcode = req.body.postcode;
   const postTypeId = req.body.postTypeId;
   const petTypeId = req.body.petTypeId;
@@ -25,15 +45,20 @@ exports.postAddPost = (req, res, next) => {
       content: content,
       petDate: petDate,
       petColor: petColor,
-      gender: gender,
+      petGenderId: petGenderId,
       postcode: postcode,
       postTypeId: postTypeId,
-      petTypeId: petTypeId
+      petTypeId: petTypeId 
+    })
+    .then(post => {
+      console.log('Post Created');
+      post.createImage({
+        imageUrl: imageUrl,
+        postId: post.id
+      })
     })
     .then(result => {
-      console.log(result);
-      console.log('Post Created');
-      res.redirect('admin/waiting-posts');
+      res.redirect('/admin/waiting-posts');
     })
     .catch(err => console.log(err));
 }
@@ -45,69 +70,109 @@ exports.getEditPost = (req, res, next) => {
   }
   // fetch Post data by id
   const postId = req.params.postId;
-  Post.findById(postId, post => {
-    if (!post) {
-      return res.redirect('/');
-    }
-    res.render('admin/edit-post', {
-      pageTitle: 'Edit Post',
-      editing: editMode, 
-      // pass the post data we just fetched to the view.
-      post: post 
-    });
+  const post = Post.findByPk(postId, {
+    include: [
+      {model: PostType, attributes: ['name']},
+      {model: PetType, attributes: ['name']},
+      {model: PetGender, attributes: ['name']},
+      {model: PostcodeArea, attributes: ['name', 'cityName']}
+    ]
   });
+  const postTypes = PostType.findAll();
+  const petTypes = PetType.findAll();
+  const petGenders = PetGender.findAll();
+  const cities = City.findAll({
+    order: [['name', 'ASC']]
+  });
+  Promise.all([post, postTypes, petTypes, petGenders, cities])
+    .then(([post, postTypes, petTypes, petGenders, cities]) => {
+      if (!post) {
+        return res.redirect('/');
+      }
+      console.log(JSON.stringify(petTypes));
+      console.log(JSON.stringify(post));
+      console.log(JSON.stringify(postTypes));
+      console.log(JSON.stringify(petGenders));
+      res.render('admin/edit-post', {
+        pageTitle: 'Edit Post',
+        editing: editMode, 
+        // pass the post data we just fetched to the view.
+        post: post,
+        postTypes: postTypes,
+        petTypes: petTypes,
+        petGenders: petGenders,
+        cities: cities
+      });
+    })
+    
+    .catch(err => {console.log(err)});
 }
-
 exports.postEditPost = (req, res, next) => {
   const postId = req.body.postId;
   const updatedTitle = req.body.title;
-  const updatedPostText = req.body.postText;
-  const updatedPostType = req.body.postType;
-  const updatedPetDate = req.body.perDate;
-  const updatedSize = req.body.size;
+  const updatedContent = req.body.content;
+  const updatedPetDate = req.body.petDate;
+  const updatedpetColor = req.body.petColor;
   const updatedGender = req.body.gender;
-  const updatedOwner = req.body.owner;
   const updatedPostcode = req.body.postcode;
-  const updatedArea = req.body.area;
-  const updatedCity = req.body.city;
-  const updatedPostDate = req.body.postDate;
-  const updatedPost = new Post(
-    postId, 
-    updatedTitle, 
-    updatedPostText, 
-    updatedPostType, 
-    updatedPetDate,
-    updatedSize,
-    updatedGender, 
-    updatedOwner,
-    updatedPostcode,
-    updatedArea,
-    updatedCity,
-    updatedPostDate
-  );
-  updatedPost.save();
-  res.redirect('/admin/waiting-posts');
+  const updatedPostTypeId = req.body.postTypeId;
+  const updatedPetTypeId = req.body.petTypeId;
+  const updatedImageUrl = req.body.imageUrl;
+  Post.findByPk(postId)
+    .then(post => {
+      post.title = updatedTitle;
+      post.content = updatedContent;
+      post.petDate = updatedPetDate;
+      post.petColor = updatedpetColor;
+      post.gender = updatedGender;
+      post.postcode = updatedPostcode;
+      post.postTypeId = updatedPostTypeId;
+      post.petTypeId = updatedPetTypeId;
+      //imageUrl?
+      return post.save();
+    })
+    .then(result => {
+      console.log('UPDATED POST');
+      res.redirect('/admin/waiting-posts');
+    })
+    .catch();
+  
 }
 
 exports.getWaitingPosts = (req, res, next) => {
-  Post.fetchAll()
-    .then(([rows, fieldData]) => {
+  Post.findAll()
+    .then((posts) => {
       res.render('admin/waiting-posts', {
-        posts: rows, 
+        posts: posts, 
         pageTitle: 'Posts',
         path: '/waiting-posts'
       });
     })
     .catch(err => console.log(err));
 }
+
+exports.postDeletePost = (req, res, next) => {
+  const postId = req.body.postId;
+  console.log(postId);
+  Post.findByPk(postId)
+    .then(post => {
+      return post.destroy();
+    })
+    .then(result => {
+      console.log('DESTROYED POST');
+      res.redirect('/admin/waiting-posts');
+    })
+    .catch(err => {console.log(err)});
+}
+
 // for route get waiting-posts/:postid
 exports.getPost = (req, res, next) => {
   const postId = req.params.postId;
-  Post.findById(postId)
-    .then(([post]) => {
+  Post.findByPk(postId)
+    .then((post) => {
       console.log(post);
       res.render('web/post-detail', {
-        post: post[0],
+        post: post,
         pageTitle: 'Post Detail'
       });
     })
@@ -116,45 +181,40 @@ exports.getPost = (req, res, next) => {
 
 
 
-exports.getSavedPosts = (req, res, next) => {
-  SavedPosts.getSavedPosts(savedPosts => {
-    Post.fetchAll(posts => {
-      const savedPostsData = [];
-      for (post of posts) {
-        if (savedPosts.posts.find(p => p.id === post.id)) {
-          savedPostsData.push({postData: post});
-        } 
-      }
-      res.render('admin/saved-posts', {
-        pageTitle: 'Ilmoitusvahdit',
-        path: '/saved-posts',
-        posts: savedPostsData
-      });
-    });
-  });
-}
+// exports.getSavedPosts = (req, res, next) => {
+//   SavedPosts.getSavedPosts(savedPosts => {
+//     Post.findAll(posts => {
+//       const savedPostsData = [];
+//       for (post of posts) {
+//         if (savedPosts.posts.find(p => p.id === post.id)) {
+//           savedPostsData.push({postData: post});
+//         } 
+//       }
+//       res.render('admin/saved-posts', {
+//         pageTitle: 'Ilmoitusvahdit',
+//         path: '/saved-posts',
+//         posts: savedPostsData
+//       });
+//     });
+//   });
+// }
 
-exports.postSavedPosts = (req, res, next) => {
-  const postId = req.body.postId;
-  Post.findById(postId, (post) => {
-    SavedPosts.addPost(postId);
-  });
-  console.log(postId);
-  res.redirect('/');
-}
+// exports.postSavedPosts = (req, res, next) => {
+//   const postId = req.body.postId;
+//   Post.findById(postId, (post) => {
+//     SavedPosts.addPost(postId);
+//   });
+//   console.log(postId);
+//   res.redirect('/');
+// }
 
-exports.getPostList = (req, res, next) => {
-  Post.fetchAll(posts => {
-    res.render('admin/post-list', {
-      posts: posts, 
-      pageTitle: 'Omat ilmoitukset',
-      path: '/post-list'
-    });
-  });
-}
+// exports.getPostList = (req, res, next) => {
+//   Post.fetchAll(posts => {
+//     res.render('admin/post-list', {
+//       posts: posts, 
+//       pageTitle: 'Omat ilmoitukset',
+//       path: '/post-list'
+//     });
+//   });
+// }
 
-exports.postDeletePost = (req, res, next) => {
-  const postId = req.body.postId;
-  Post.deleteById(postId);
-  res.redirect('admin/waiting-posts');
-}

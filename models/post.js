@@ -22,12 +22,7 @@ const Post = sequelize.define('post', {
   petDate: {
     type: Sequelize.DATEONLY,
     field: 'pet_date'
-  },
-  petColor: {
-    type: Sequelize.STRING(30),
-    field: 'pet_color'
-  },
-  gender: Sequelize.TINYINT //0: uros, 1: naaras
+  }
 }, {
   timestamps: true,
   paranoid: true,

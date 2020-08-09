@@ -19,6 +19,7 @@ const PostType = require('./models/postType');
 const Post = require('./models/post');
 const Image = require('./models/image');
 const Message = require('./models/message');
+const PetGender = require('./models/petGender');
 const PostcodeArea = require('./models/postcodeArea');
 const City = require('./models/city');
 const Region = require('./models/region');
@@ -59,6 +60,9 @@ Post.belongsTo(PostType, { foreignKey: { allowNull: false } });
 
 PetType.hasMany(Post, { foreignKey: { allowNull: false } });
 Post.belongsTo(PetType, { foreignKey: { allowNull: false } });
+
+PetGender.hasMany(Post, { foreignKey: { allowNull: false } });
+Post.belongsTo(PetGender, { foreignKey: { allowNull: false } });
 
 Member.hasMany(Post, { foreignKey: { allowNull: false }, onDelete: 'CASCADE'});
 Post.belongsTo(Member);

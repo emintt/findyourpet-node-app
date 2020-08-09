@@ -2,10 +2,10 @@ const Post = require('../models/post');
 const SavedPosts = require('../models/saved-posts');
 
 exports.getIndex = (req, res, next) => {
-  Post.fetchAll()
-    .then(([rows, fileData]) => {
+  Post.findAll()
+    .then( posts => {
       res.render('web/index', { 
-        posts: rows,
+        posts: posts,
         pageTitle: 'Find Your Pet',
         path: '/'
       });
