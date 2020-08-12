@@ -11,11 +11,11 @@
           <% for (let post of posts) { %>
             <div class="media tile">
               <a href="/admin/waiting-posts/<%= post.id %>" >
-                <img class="media-image" src="/img/250x250/cat1.jpg" alt="cat1">
+                <img class="media-image" src="<%= post.images[0].imageUrl %>" alt="<%=post.title%>>">
                 <div class="media-body">
-                  <p><%= post.petGenderId %></p><br>
-                  <p><%= post.postcode%> <%= post.city%></p><br>
-                  <p><%= post.postType%> <%= post.petDate%></p>
+                  <p><%= post.petType.name %></p><br>
+                  <p><%= post.postcodeArea.name%>, <%= post.postcodeArea.cityName%></p><br>
+                  <p><%= post.postType.name%> <%= post.petDate%></p>
                 </div>
               </a>
               <div class="media-action">

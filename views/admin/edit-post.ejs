@@ -42,7 +42,7 @@
                         <div class="text-field base" ><input id="postcode" type="text" name="postcode" value="<% if (editing) { %><%=post.postcode%><% } %>"></div>
                         <label for="petDate">Kadonneet tai löytyy päivämäärä*</label>
                         <div class="text-field base" ><input id="date" type="date" name="petDate" value="<% if (editing) { %><%=post.petDate%><% } %>"></div>
-                        <label for="petTypeId">Lemmikin tyyppi</label>
+                        <label for="petTypeId">Lemmikin tyyppi*</label>
                         <div class="text-field dropdown base">
                             <select name="petTypeId">
                                 <option value="Valitse tyyppi">Valitse tyyppi</option>
@@ -57,21 +57,7 @@
                             
                             </select>
                         </div>
-                        <label for="petColor">Lemmikin väri</label>
-                        <div class="text-field dropdown base">
-                            <select name="petColor" value="<% if (editing) { %><%=post.petColor%><% } %>">
-                                <option value="kaikki">Kaikki värit</option>
-                                <option value="musta">Musta</option>
-                                <option  value="ruskea">Ruskea</option>
-                                <option  value="kultainen">Kultainen</option>
-                                <option value="punainen">Punainen</option>
-                                <option  value="harmaa">Harmaa</option>
-                                <option  value="valkoinen">Valkoinen</option>
-                                <option value="oranssi">Oranssi</option>
-                                <option  value="monivarinen">Monivärinen</option>
-                            </select>
-                        </div>
-                        <label for="petGenderId">Lemmikin sukupuoli</label>
+                        <label for="petGenderId">Lemmikin sukupuoli*</label>
                         <div class="text-field dropdown base">
                             <select name="petGenderId" ><% if (editing) { %><%=post.gender%><% } %>
                                 <option value="0">Valitse sukupuoli</option>
@@ -88,24 +74,12 @@
                                 
                             </select>
                         </div>
-                        <!-- <label for="breed">Lemmikin rotu</label>
-                        <div class="text-field dropdown base">
-                            <select name="breed" value="<% if (editing) { %><%=post.breed%><% } %>">
-                                <option value="valitse rotu">Valitse rotu</option>
-                                <option value="exotic">Exotic</option>
-                                <option  value="turkkilainen van">Turkkilainen van</option>
-                                <option  value="ameriacan curl">American Curl</option>
-                                <option value="laPerm">LaPerm</option>
-                                <option  value="maine coon">Maine Coon</option>
-                                <option  value="neva masquerade">Neva Masquerade</option>
-                            </select>
-                        </div> -->
-                        <label for="title">Otsikko</label>
+                        <label for="title">Otsikko*</label>
                         <div class="text-field base" ><input id="title" type="text" name="title" value="<% if (editing) { %><%=post.title%><% } %>"></div>
                         <label for="content">Ilmoitusteksti*</label>
                         <div class="text-field base" ><textarea id="postText" name="content" rows="5"><% if (editing) { %><%=post.content%><% } %></textarea></div>
                         <label for="imageUrl">Kuva*</label>
-                        <div class="" ><input id="kuva" type="text" name="imageUrl" value="<% if (editing) { %><%= post.imageUrl %><% } %>"></div>
+                        <div class="" ><input id="kuva" type="text" name="imageUrl" value="<% if (editing) { %><%= post.images[0].imageUrl %><% } %>"></div>
                         
                         <% if (editing) { %>
                             <input type="hidden" name="postId" value="<%= post.id %>">

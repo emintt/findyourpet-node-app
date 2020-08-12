@@ -13,11 +13,13 @@
                 </div>
                 <% for (let post of posts) { %>
                   <a href="/admin/waiting-posts/<%= post.id %>" class="media tile">
-                      <img class="media-image" src="img/250x250/cat1.jpg" alt="cat1">
-                      <div class="media-body">
-                        <p><%= post.gender %></p><br>
-                        <p><%= post.city%></p><br>
-                        <p><%= post.postType%> <%= post.petDate%></p>
+                      <div class="media-image">
+                        <img src="<%= post.images[0].imageUrl %>" alt="<%=post.title%>>">
+                      </div>
+                      <div class="media-body"> 
+                        <p><%= post.petType.name %></p><br>
+                        <p><%= post.postcodeArea.name%>, <%= post.postcodeArea.cityName%></p><br>
+                        <p><%= post.postType.name%> <%= post.petDate%></p>
                       </div>
                   </a>
                 <% } %>

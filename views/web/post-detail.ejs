@@ -6,19 +6,19 @@
     <%- include('../includes/navigation.ejs') %>
     <div class="page-container">
       <div class="detail-container search-form">
-        <div class="detail-image-container"><img class="detail-image" src="img/300x400/cat4a.jpg" alt="cat4a"></div>
+        <div class="detail-image-container"><img class="detail-image" src="<%=post.images[0].imageUrl%>" alt="<%=post.title%>"></div>
         <div class="detail-info">
             <div class="detail-info-1">
                 <h2><%= post.title %></h2>
-                <p>Ilmoitus tyyppi: <%= post.postTypeId %></p>
-                <p><%= post.postTypeId %>: <%= post.petDate %></p>
-                <p>Sukupuoli: <%= post.gender %></p>
+                <p>Ilmoitus tyyppi: <%= post.postType.name %></p>
+                <p><%= post.postType.name %>: <%= post.petDate %></p>
+                <p>Sukupuoli: <%= post.petGender.name %></p>
             </div>
             <div class="detail-info-2">
                 <p class="desktop-only"> <h2>&nbsp;</h2> </p>
-                <p>Ilmoitajan nimi: <%= post.memberId %></p>
-                <p>Kunta: <%= post.postcodeAreaId %>, <%= post.cityId %></p>
-                <p>Ilmoitus jätetty: <%= post.createdDate %></p>
+                <p>Ilmoitajan nimi: <%= post.member.name %></p>
+                <p>Kunta: <%= post.postcodeArea.name %>, <%= post.postcodeArea.cityName %></p>
+                <p>Ilmoitus jätetty: <%= post.createdAt %></p>
             </div>  
         </div>
         <div class="detail-content">

@@ -348,9 +348,17 @@ input[type='radio']:checked:after {
   
 }
 .media-image {
-  border-radius: 8px;
-  width: 100%;
-  height: auto;
+  /* border-radius: 8px; */
+  align-self: center; 
+  /* width: 100%;
+  height: auto; */
+}
+.media-image > img {
+   
+   max-width: 15rem;
+    max-height: 15rem;
+  margin: 0 auto;
+  border-radius: 8px; 
 }
 
 /* Footer */
@@ -663,6 +671,9 @@ button {
       width: 125px;
       height: 125px;
   }
+  
+
+
   .media-body {
       margin-left: 1em;
       margin-top: 0;

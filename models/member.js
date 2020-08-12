@@ -15,20 +15,17 @@ const Member = sequelize.define('member', {
   },
   password: {
     type: Sequelize.STRING,
+    allowNull: false,
+  },
+  name: {
+    type: Sequelize.STRING(100),
+    field: 'name',
     allowNull: false
-  },
-  firstName: {
-    type: Sequelize.STRING(100),
-    field: 'first_name'
-  },
-  
-  lastName: {
-    type: Sequelize.STRING(100),
-    field: 'last_name'
   },
   phoneNumber: {
     type: Sequelize.STRING(100),
-    field: 'phone_number'
+    field: 'phone_number',
+    allowNull: false
   }
 }, {
   timestamps: true,

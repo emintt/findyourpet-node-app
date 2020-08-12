@@ -73,7 +73,7 @@ Message.belongsTo(Member, { foreignKey: { allowNull: false }});
 Post.hasMany(Message, { foreignKey: { allowNull: false }});
 Message.belongsTo(Post, { foreignKey: { allowNull: false }});
 
-Post.hasMany(Image, { foreignKey: { allowNull: false }});
+Post.hasMany(Image, { foreignKey: { allowNull: false }, onDelete: 'CASCADE'}); // delete post -> delete image
 Image.belongsTo(Post, { foreignKey: { allowNull: false }});
 
 
@@ -85,7 +85,7 @@ sequelize
   })
   .then( member => {
     if (!member) {
-      return Member.create({email: 'elminguyen@gmail.com', password: '123456', firstName: 'Liem', lastName: 'Nguyen', phoneNumber: '0123456789' });
+      return Member.create({email: 'elminguyen@gmail.com', password: '123456', name: 'Liem', phoneNumber: '0123456789' });
     }
     return member;
   })

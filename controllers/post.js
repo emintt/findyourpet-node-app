@@ -4,7 +4,11 @@ const PostType = require('../models/postType');
 const PetGender = require('../models/petGender');
 const City = require('../models/city');
 const PostcodeArea = require('../models/postcodeArea');
+const Image = require('../models/image');
+const Member = require('../models/member');
 const SavedPosts = require('../models/saved-posts');
+
+const sequelize = require('../util/database');
 
 
 exports.getAddPost = (req, res, next) => {
@@ -75,7 +79,8 @@ exports.getEditPost = (req, res, next) => {
       {model: PostType, attributes: ['name']},
       {model: PetType, attributes: ['name']},
       {model: PetGender, attributes: ['name']},
-      {model: PostcodeArea, attributes: ['name', 'cityName']}
+      {model: PostcodeArea, attributes: ['name', 'cityName']},
+      {model: Image, attributes: ['imageUrl']}
     ]
   });
   const postTypes = PostType.findAll();
@@ -120,6 +125,7 @@ exports.postEditPost = (req, res, next) => {
   const updatedImageUrl = req.body.imageUrl;
   Post.findByPk(postId)
     .then(post => {
+      console.log(JSON.stringify(post));
       post.title = updatedTitle;
       post.content = updatedContent;
       post.petDate = updatedPetDate;
@@ -128,19 +134,38 @@ exports.postEditPost = (req, res, next) => {
       post.postcode = updatedPostcode;
       post.postTypeId = updatedPostTypeId;
       post.petTypeId = updatedPetTypeId;
-      //imageUrl?
       return post.save();
+    }).
+    then(post => {
+      Image.update(
+        {imageUrl: req.body.imageUrl}, 
+        {where: {postId: post.id } 
+      });
     })
     .then(result => {
       console.log('UPDATED POST');
       res.redirect('/admin/waiting-posts');
     })
-    .catch();
-  
+    .catch(err => {
+      console.log(err);
+    });
 }
 
 exports.getWaitingPosts = (req, res, next) => {
-  Post.findAll()
+  Post.findAll({
+    attributes: { 
+      include: [
+        [sequelize.fn('DATE_FORMAT', sequelize.col('post.created_at'), '%d.%m.%Y'), 'createdAt'], 
+        [sequelize.fn('DATE_FORMAT', sequelize.col('post.pet_date'), '%d.%m.%Y'), 'petDate']
+      ]},
+    include: [
+      {model: PostType, attributes: ['name']},
+      {model: PetType, attributes: ['name']},
+      {model: PetGender, attributes: ['name']},
+      {model: PostcodeArea, attributes: ['name', 'cityName']},
+      {model: Image, attributes: ['imageUrl']} // this returns images not image (1 post -> n imgs)
+    ]
+  })
     .then((posts) => {
       res.render('admin/waiting-posts', {
         posts: posts, 
@@ -165,12 +190,26 @@ exports.postDeletePost = (req, res, next) => {
     .catch(err => {console.log(err)});
 }
 
-// for route get waiting-posts/:postid
+// for route get waiting-posts/:postId
 exports.getPost = (req, res, next) => {
   const postId = req.params.postId;
-  Post.findByPk(postId)
+  Post.findByPk(postId, {
+    attributes: { 
+      include: [
+        [sequelize.fn('DATE_FORMAT', sequelize.col('post.created_at'), '%d.%m.%Y'), 'createdAt'], 
+        [sequelize.fn('DATE_FORMAT', sequelize.col('post.pet_date'), '%d.%m.%Y'), 'petDate']
+      ]},
+    include: [
+      {model: PostType, attributes: ['name']},
+      {model: PetType, attributes: ['name']},
+      {model: PetGender, attributes: ['name']},
+      {model: PostcodeArea, attributes: ['name', 'cityName']},
+      {model: Image, attributes: ['imageUrl']},
+      {model: Member, attributes: ['name']}
+    ] 
+  })
     .then((post) => {
-      console.log(post);
+      console.log(JSON.stringify(post));
       res.render('web/post-detail', {
         post: post,
         pageTitle: 'Post Detail'

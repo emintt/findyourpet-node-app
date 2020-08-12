@@ -13,6 +13,8 @@ const Image = sequelize.define('image', {
     type: Sequelize.STRING(1024),
     field: 'image_url'
   }
+}, {
+  tableName: 'image',
 });
 
 module.exports = Image;
