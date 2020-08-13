@@ -22,7 +22,7 @@
                 <a href="/admin/edit-post/<%= post.id %>?edit=true" class="button-green">Muokata</a>
                 <form action="/admin/delete-post" method="POST">
                   <input type="hidden" value="<%= post.id %>" name="postId">
-                  <button class="button-green" type="submit">Poista</button>
+                  <button class="button-delete" type="submit">Poista</button>
                 </form>
               </div>
               

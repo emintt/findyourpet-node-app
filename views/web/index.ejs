@@ -13,9 +13,9 @@
                 </div>
                 <% for (let post of posts) { %>
                   <a href="/admin/waiting-posts/<%= post.id %>" class="media tile">
-                      <div class="media-image">
-                        <img src="<%= post.images[0].imageUrl %>" alt="<%=post.title%>>">
-                      </div>
+                      
+                      <img class="media-image" src="<%= post.images[0].imageUrl %>" alt="<%=post.title%>>">
+                      
                       <div class="media-body"> 
                         <p><%= post.petType.name %></p><br>
                         <p><%= post.postcodeArea.name%>, <%= post.postcodeArea.cityName%></p><br>

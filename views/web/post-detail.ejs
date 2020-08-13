@@ -6,36 +6,42 @@
     <%- include('../includes/navigation.ejs') %>
     <div class="page-container">
       <div class="detail-container search-form">
-        <div class="detail-image-container"><img class="detail-image" src="<%=post.images[0].imageUrl%>" alt="<%=post.title%>"></div>
+        <div class="detail-image-container">
+          <img class="detail-image" src="<%=post.images[0].imageUrl%>" alt="<%=post.title%>">
+        </div>
         <div class="detail-info">
+          <div class="detail-info-heading">
+            <h2><%= post.title %></h2>
+          </div>
+          <div class="detail-info-content">
             <div class="detail-info-1">
-                <h2><%= post.title %></h2>
-                <p>Ilmoitus tyyppi: <%= post.postType.name %></p>
-                <p><%= post.postType.name %>: <%= post.petDate %></p>
-                <p>Sukupuoli: <%= post.petGender.name %></p>
+              <p>Ilmoitus tyyppi: <%= post.postType.name %></p>
+              <p><%= post.postType.name %>: <%= post.petDate %></p>
+              <p>Sukupuoli: <%= post.petGender.name %></p>
             </div>
             <div class="detail-info-2">
-                <p class="desktop-only"> <h2>&nbsp;</h2> </p>
-                <p>Ilmoitajan nimi: <%= post.member.name %></p>
-                <p>Kunta: <%= post.postcodeArea.name %>, <%= post.postcodeArea.cityName %></p>
-                <p>Ilmoitus jätetty: <%= post.createdAt %></p>
-            </div>  
+              <p>Ilmoitajan nimi: <%= post.member.name %></p>
+              <p>Kunta: <%= post.postcodeArea.name %>, <%= post.postcodeArea.cityName %></p>
+              <p>Ilmoitus jätetty: <%= post.createdAt %></p>
+            </div> 
+          </div> 
         </div>
         <div class="detail-content">
-            <p><%= post.text %></p>
+          <p><%= post.content %></p>
         </div>
-        <%- include('../includes/save-post-form') %>
-        <a href=logindetail.html><div class="message-button edit-post button button-green">Lähetä viesti ilmoitajalle</div></a>
-        <form class="send-message" method="POST" action="message_success.html">
-          <div class="send-message-container">
-              <h3>Lähetä viesti ilmoitajalle</h3>
-              <label for="name">Nimi</label>
-              <div class="text-field base" ><input id="nimi" type="text" name="name"></div>
-              <label for="message">Viesti</label>
-              <div class="text-field base" ><textarea id="sendmessage-viesti" name="message" rows="5"></textarea></div>
-              <a href=message_success.html><div class="message-button edit-post button button-green">Lähetä viesti ilmoitajalle</div></a>
-          </div>
-        </form>
+        <div class="detail-action">
+          <a href=logindetail.html><div class="message-button button button-green">Lähetä viesti ilmoitajalle</div></a>
+          <form class="send-message" method="POST" action="message_success.html">
+            <div class="send-message-container">
+                <h3>Lähetä viesti ilmoitajalle</h3>
+                <label for="name">Nimi</label>
+                <div class="text-field base" ><input id="nimi" type="text" name="name"></div>
+                <label for="message">Viesti</label>
+                <div class="text-field base" ><textarea id="sendmessage-viesti" name="message" rows="5"></textarea></div>
+                <a href=message_success.html><div class="message-button button button-green">Lähetä viesti ilmoitajalle</div></a>
+            </div>
+          </form>
+        </div>
       </div>
       <div class="base pets">
                   
