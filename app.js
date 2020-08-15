@@ -1,15 +1,26 @@
 const path = require('path');
 
 const http = require('http');
-const bodyParser = require('body-parser');
 const express = require('express');
+const bodyParser = require('body-parser');
+const session = require('express-session');
+const Sequelize = require('sequelize');
+const sequelize = require('./util/database');
+
+// initalize sequelize with session store
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
+
 const app = express();
+const store = new SequelizeStore({
+  db: sequelize
+});
 
 const adminRoutes = require('./routes/admin');
 const webRoutes = require('./routes/web');
+const authRoutes = require('./routes/auth');
 
 const errorController = require('./controllers/error');
-const sequelize = require('./util/database');
+
 
 
 
@@ -32,18 +43,28 @@ app.set('views', 'views');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(
+  session({
+    secret: 'my secret', 
+    resave: false, 
+    saveUninitialized: false,
+    store: store
+  })
+);
 
-app.use((req, res, next) => {
-  Member.findByPk(1)
-    .then(member => {
-      req.member = member;
-      next();
-    })
-    .catch(err => console.log(err));
-});
+// app.use((req, res, next) => {
+//   Member.findByPk(1)
+//     .then(member => {
+//       req.member = member;
+//       next();
+//     })
+//     .catch(err => console.log(err));
+// });
 
 app.use('/admin', adminRoutes);
 app.use(webRoutes);
+app.use(authRoutes);
+
 app.use(errorController.get404);
 
 Region.hasMany(City, { foreignKey: { name: 'regionName', allowNull: false } });

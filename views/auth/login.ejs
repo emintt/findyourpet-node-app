@@ -1,0 +1,32 @@
+<%- include('../includes/head.ejs') %>
+</head>
+
+<body>
+    <div class="container"> 
+        <%- include('../includes/navigation.ejs') %>
+        <div class="page-container">
+            <div class="login-form-container"> 
+                <h1>Kirjaudu sisään</h1>
+                <form method="POST" action="/login"> 
+                    <div class="login-module">
+                        <div class="text-field base">
+                            <label for="email">Sähköpostiosoite</label>
+                            <input id="email" type="text" name="email" placeholder= "">
+                        </div>
+                        <div class="text-field base">
+                            <label for="password">Salasana</label>
+                            <input id="password" type="text" name="password" placeholder= "">
+                        </div>
+                        <div class="search-button base">
+                            <button class="button-green button login-button" type="submit">Kiraudu sisään</button>   
+                        </div>
+                        <div class="forgot-link">
+                            <span>Uhnoditko salasanasi?<a href="resetpassword.html">Paina tästä</a></span><br>
+                            <span>Haluatko luoda uuden tilin?<a href="signup.html">Rekisteröi</a></span>
+                        </div>
+                    </div>
+                </form>     
+            </div>           
+        </div>
+    </div>    
+    <%- include('../includes/end.ejs') %>

@@ -12,7 +12,7 @@
                     <h2>Viimeaikaiset lemmikit</h2>
                 </div>
                 <% for (let post of posts) { %>
-                  <a href="/admin/waiting-posts/<%= post.id %>" class="media tile">
+                  <a href="/posts/<%= post.id %>" class="media tile">
                       
                       <img class="media-image" src="<%= post.images[0].imageUrl %>" alt="<%=post.title%>>">
                       

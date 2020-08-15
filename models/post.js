@@ -21,24 +21,8 @@ const Post = sequelize.define('post', {
   },
   petDate: {
     type: Sequelize.DATE,
-    field: 'pet_date',
-    //defaultValue: sequelize.fn('DATE_FORMAT', sequelize.col('post.pet_date'), '%d/%m/%Y')
-    // get() {
-    //   let rawValue = this.getDataValue('petDate');
-    //   return rawValue.getFullYear();
-    // }
+    field: 'pet_date'
   }
-  // ,
-  // createdAt: {
-  //   type: Sequelize.DATE,
-  //   allowNull: false,
-  //   defaultValue: Sequelize.NOW,
-  //   field: 'created_at',
-  //   get() {
-  //     let rawValue = this.getDataValue(createdAt);
-  //     return rawValue;
-  //   }
-  // }
 }, {
   timestamps: true,
   // createdAt: 'created_at', 

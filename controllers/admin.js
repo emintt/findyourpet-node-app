@@ -6,7 +6,7 @@ const City = require('../models/city');
 const PostcodeArea = require('../models/postcodeArea');
 const Image = require('../models/image');
 const Member = require('../models/member');
-const SavedPosts = require('../models/saved-posts');
+
 
 const sequelize = require('../util/database');
 
@@ -27,7 +27,8 @@ exports.getAddPost = (req, res, next) => {
         postTypes: postTypes,
         petTypes: petTypes,
         petGenders: petGenders,
-        cities: cities
+        cities: cities,
+        isAuthenticated: req.session.isLoggedIn
       });
     })
     .catch(err => {console.log(err)});
@@ -43,8 +44,9 @@ exports.postAddPost = (req, res, next) => {
   const postTypeId = req.body.postTypeId;
   const petTypeId = req.body.petTypeId;
   const imageUrl = req.body.imageUrl;
-  req.member
-    .createPost({
+  //console.log(req.session.member instanceof Member); -> false
+  // to create post is a short cut of build + save
+  Post.create({
       title: title,
       content: content,
       petDate: petDate,
@@ -52,7 +54,8 @@ exports.postAddPost = (req, res, next) => {
       petGenderId: petGenderId,
       postcode: postcode,
       postTypeId: postTypeId,
-      petTypeId: petTypeId 
+      petTypeId: petTypeId,
+      memberId: req.session.member.id
     })
     .then(post => {
       console.log('Post Created');
@@ -62,7 +65,7 @@ exports.postAddPost = (req, res, next) => {
       })
     })
     .then(result => {
-      res.redirect('/admin/waiting-posts');
+      res.redirect('/admin/posts');
     })
     .catch(err => console.log(err));
 }
@@ -106,7 +109,8 @@ exports.getEditPost = (req, res, next) => {
         postTypes: postTypes,
         petTypes: petTypes,
         petGenders: petGenders,
-        cities: cities
+        cities: cities,
+        isAuthenticated: req.session.isLoggedIn
       });
     })
     
@@ -144,15 +148,16 @@ exports.postEditPost = (req, res, next) => {
     })
     .then(result => {
       console.log('UPDATED POST');
-      res.redirect('/admin/waiting-posts');
+      res.redirect('/admin/posts');
     })
     .catch(err => {
       console.log(err);
     });
 }
 
-exports.getWaitingPosts = (req, res, next) => {
+exports.getPosts = (req, res, next) => {
   Post.findAll({
+    where: {memberId: req.session.member.id},
     attributes: { 
       include: [
         [sequelize.fn('DATE_FORMAT', sequelize.col('post.created_at'), '%d.%m.%Y'), 'createdAt'], 
@@ -167,10 +172,11 @@ exports.getWaitingPosts = (req, res, next) => {
     ]
   })
     .then((posts) => {
-      res.render('admin/waiting-posts', {
+      res.render('admin/posts', {
         posts: posts, 
         pageTitle: 'Posts',
-        path: '/waiting-posts'
+        path: '/posts',
+        isAuthenticated: req.session.isLoggedIn
       });
     })
     .catch(err => console.log(err));
@@ -185,38 +191,12 @@ exports.postDeletePost = (req, res, next) => {
     })
     .then(result => {
       console.log('DESTROYED POST');
-      res.redirect('/admin/waiting-posts');
+      res.redirect('/admin/posts');
     })
     .catch(err => {console.log(err)});
 }
 
-// for route get waiting-posts/:postId
-exports.getPost = (req, res, next) => {
-  const postId = req.params.postId;
-  Post.findByPk(postId, {
-    attributes: { 
-      include: [
-        [sequelize.fn('DATE_FORMAT', sequelize.col('post.created_at'), '%d.%m.%Y'), 'createdAt'], 
-        [sequelize.fn('DATE_FORMAT', sequelize.col('post.pet_date'), '%d.%m.%Y'), 'petDate']
-      ]},
-    include: [
-      {model: PostType, attributes: ['name']},
-      {model: PetType, attributes: ['name']},
-      {model: PetGender, attributes: ['name']},
-      {model: PostcodeArea, attributes: ['name', 'cityName']},
-      {model: Image, attributes: ['imageUrl']},
-      {model: Member, attributes: ['name']}
-    ] 
-  })
-    .then((post) => {
-      console.log(JSON.stringify(post));
-      res.render('web/post-detail', {
-        post: post,
-        pageTitle: 'Post Detail'
-      });
-    })
-    .catch(err => console.log(err));
-}
+
 
 
 

@@ -10,7 +10,7 @@
         <% if (posts.length > 0) { %>
           <% for (let post of posts) { %>
             <div class="media tile">
-              <a href="/admin/waiting-posts/<%= post.id %>" >
+              <a href="/posts/<%= post.id %>" >
                 <img class="media-image" src="<%= post.images[0].imageUrl %>" alt="<%=post.title%>>">
                 <div class="media-body">
                   <p><%= post.petType.name %></p><br>
@@ -27,8 +27,6 @@
               </div>
               
             </div>
-              
-            
           <% } %>
         <% } else {%>
           <h1>No post</h1>

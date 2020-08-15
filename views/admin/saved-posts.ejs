@@ -10,7 +10,7 @@
           <% if (posts.length > 0) { %>
             <% for (let p of posts) { %>
               <div class="media tile">
-                <a href="/admin/waiting-posts/<%= post.id %>">
+                <a href="/admin/saved-posts/<%= p.id %>">
                   <img class="media-image" src="img/250x250/cat1.jpg" alt="cat1">
                   <div class="media-body">
                     <p><%= p.postData.gender %></p><br>
