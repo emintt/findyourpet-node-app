@@ -52,14 +52,17 @@ app.use(
   })
 );
 
-// app.use((req, res, next) => {
-//   Member.findByPk(1)
-//     .then(member => {
-//       req.member = member;
-//       next();
-//     })
-//     .catch(err => console.log(err));
-// });
+app.use((req, res, next) => {
+  if (!req.session.member) {
+    return next();
+  }
+  Member.findByPk(req.session.member.id)
+    .then(member => {
+      req.member = member;
+      next();
+    })
+    .catch(err => console.log(err));
+});
 
 app.use('/admin', adminRoutes);
 app.use(webRoutes);
@@ -101,17 +104,6 @@ Image.belongsTo(Post, { foreignKey: { allowNull: false }});
 sequelize
   .sync()
   .then(result => {
-    //console.log(result);
-    return Member.findByPk(1);
-  })
-  .then( member => {
-    if (!member) {
-      return Member.create({email: 'elminguyen@gmail.com', password: '123456', name: 'Liem', phoneNumber: '0123456789' });
-    }
-    return member;
-  })
-  .then(member => {
-    //console.log(member);
     app.listen(3000);
   })
   .catch(err => {console.log(err)});

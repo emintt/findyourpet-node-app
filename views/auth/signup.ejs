@@ -1,0 +1,43 @@
+<%- include('../includes/head.ejs') %>
+</head>
+
+<body>
+    <div class="container">
+        <%- include('../includes/navigation.ejs') %>
+        <div class="page-container">
+            <div class="login-form-container"> 
+                <h1>Luo tili</h1>
+                <form method="post" action="/signup"> 
+                    <div class="login-module">
+                        <div class="text-field base">
+                            <label for="name">Sinun nimi*</label>
+                            <input id="name" type="text" name="name" placeholder= "">
+                        </div>
+                        <div class="text-field base">
+                            <label for="email">Sähköpostiosoite*</label>
+                            <input id="email" type="text" name="email" placeholder= "">
+                        </div>
+                        <div class="text-field base">
+                          <label for="phoneNumber">Puhelinnumero*</label>
+                          <input id="phone" type="text" name="phoneNumber" placeholder= "">
+                      </div>
+                        <div class="text-field base">
+                            <label for="password">Luoda salasana*</label>
+                            <input id="password" type="password" name="password" placeholder= "">
+                        </div>
+                        <div class="text-field base">
+                            <label for="confirmPassword">Toista salasana*</label>
+                            <input id="confirmPassword" type="password" name="confirmPassword" placeholder= "">
+                        </div>
+                        <div class="search-button base">
+                            <button class="button-green button login-button" type="submit">Luo tili</button>   
+                        </div>
+                        <div class="forgot-link">
+                            <a href="resetpassword.html">Uhnoditko salasanasi?</a>
+                        </div>
+                    </div>
+                </form>     
+            </div>           
+        </div>
+    </div>    
+    <%- include('../includes/end.ejs') %>
