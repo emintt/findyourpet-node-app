@@ -7,6 +7,9 @@
         <div class="page-container">
             <div class="login-form-container"> 
                 <h1>Luo tili</h1>
+                <% if(errorMessage) { %>
+                    <div class="user-message user-message-error"><%= errorMessage %></div>
+                    <% } %>
                 <form method="post" action="/signup"> 
                     <div class="login-module">
                         <div class="text-field base">
@@ -30,6 +33,7 @@
                             <input id="confirmPassword" type="password" name="confirmPassword" placeholder= "">
                         </div>
                         <div class="search-button base">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                             <button class="button-green button login-button" type="submit">Luo tili</button>   
                         </div>
                         <div class="forgot-link">

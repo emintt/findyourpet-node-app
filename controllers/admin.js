@@ -1,3 +1,4 @@
+const moment = require('moment');
 const Post = require('../models/post');
 const PetType = require('../models/petType');
 const PostType = require('../models/postType');
@@ -37,13 +38,15 @@ exports.getAddPost = (req, res, next) => {
 exports.postAddPost = (req, res, next) => {
   const title = req.body.title;
   const content = req.body.content;
-  const petDate = req.body.petDate;
+  const inputPetDateString = req.body.petDate;
   const petColor = req.body.petColor;
   const petGenderId = req.body.petGenderId;
   const postcode = req.body.postcode;
   const postTypeId = req.body.postTypeId;
   const petTypeId = req.body.petTypeId;
-  const imageUrl = req.body.imageUrl;
+  const imageUrl = req.body.imageUrl; 
+
+  const petDate = moment.utc(inputPetDateString, "DD/MM/YYYY").format("YYYY-MM-DD");
   //console.log(req.session.member instanceof Member); -> false
   // to create post is a short cut of build + save
   Post.create({
@@ -109,8 +112,7 @@ exports.getEditPost = (req, res, next) => {
         postTypes: postTypes,
         petTypes: petTypes,
         petGenders: petGenders,
-        cities: cities,
-        isAuthenticated: req.session.isLoggedIn
+        cities: cities
       });
     })
     
@@ -153,7 +155,7 @@ exports.postEditPost = (req, res, next) => {
     .catch(err => {
       console.log(err);
     });
-}
+} 
 
 exports.getPosts = (req, res, next) => {
   Post.findAll({
@@ -161,8 +163,10 @@ exports.getPosts = (req, res, next) => {
     attributes: { 
       include: [
         [sequelize.fn('DATE_FORMAT', sequelize.col('post.created_at'), '%d.%m.%Y'), 'createdAt'], 
-        [sequelize.fn('DATE_FORMAT', sequelize.col('post.pet_date'), '%d.%m.%Y'), 'petDate']
-      ]},
+        // [sequelize.fn('DATE_FORMAT', sequelize.col('post.pet_date'), '%d.%m.%Y'), 'petDate']
+      ]
+    },
+    order: [['createdAt', 'desc']],
     include: [
       {model: PostType, attributes: ['name']},
       {model: PetType, attributes: ['name']},
@@ -175,8 +179,7 @@ exports.getPosts = (req, res, next) => {
       res.render('admin/posts', {
         posts: posts, 
         pageTitle: 'Posts',
-        path: '/posts',
-        isAuthenticated: req.session.isLoggedIn
+        path: '/posts'
       });
     })
     .catch(err => console.log(err));

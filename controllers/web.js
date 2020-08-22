@@ -9,10 +9,6 @@ const sequelize = require('../util/database');
 
 exports.getIndex = (req, res, next) => {
   Post.findAll({
-    attributes: { 
-      include: [
-        [sequelize.fn('DATE_FORMAT', sequelize.col('post.pet_date'), '%d.%m.%Y'), 'petDate']
-      ]},
     include: [
       {model: PostType, attributes: ['name']},
       {model: PetType, attributes: ['name']},
@@ -26,8 +22,7 @@ exports.getIndex = (req, res, next) => {
       res.render('web/index', { 
         posts: posts,
         pageTitle: 'Find Your Pet',
-        path: '/',
-        isAuthenticated: req.session.isLoggedIn
+        path: '/'
       });
     })
     .catch(err => {console.log(err)});
@@ -40,7 +35,7 @@ exports.getPost = (req, res, next) => {
     attributes: { 
       include: [
         [sequelize.fn('DATE_FORMAT', sequelize.col('post.created_at'), '%d.%m.%Y'), 'createdAt'], 
-        [sequelize.fn('DATE_FORMAT', sequelize.col('post.pet_date'), '%d.%m.%Y'), 'petDate']
+        // [sequelize.fn('DATE_FORMAT', sequelize.col('post.pet_date'), '%d.%m.%Y'), 'petDate']
       ]},
     include: [
       {model: PostType, attributes: ['name']},
@@ -55,8 +50,7 @@ exports.getPost = (req, res, next) => {
       console.log(JSON.stringify(post));
       res.render('web/post-detail', {
         post: post,
-        pageTitle: 'Post Detail',
-        isAuthenticated: req.session.isLoggedIn
+        pageTitle: 'Post Detail'
       });
     })
     .catch(err => console.log(err));

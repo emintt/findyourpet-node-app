@@ -8,6 +8,7 @@
       </li>
       <li class="signout">
         <form action="/logout" method="POST">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
           <button type="submit">Kirjaudu ulos</button>
         </form>
       </li>

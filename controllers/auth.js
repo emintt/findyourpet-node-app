@@ -3,18 +3,35 @@ const bcrypt = require('bcryptjs');
 const Member = require('../models/member');
 
 exports.getSignup = (req, res, next) => {
+  let message = req.flash('error');
+  if (message.length > 0) {
+    message = message[0];
+  } else {
+    message = null;
+  }
   res.render('auth/signup', {
     pageTitle: 'Sign up',
-    isAuthenticated: false
+    errorMessage: message
   });
 }
 
 exports.getLogin = (req, res, next) => {
-  console.log(req.session.isLoggedIn);
+  
+  // message will come in an array
+  let errorMessage = req.flash('error');
+  if (errorMessage.length > 0) {
+    errorMessage = errorMessage[0];
+  } else {
+    errorMessage = null;
+  }
+  let successMessage = req.flash('success');
+  successMessage = successMessage.length > 0 ? successMessage[0] : null;
+
   res.render('auth/login', {
     path: '/login', 
     pageTitle: 'Log in',
-    isAuthenticated: false
+    errorMessage: errorMessage,
+    successMessage: successMessage
   })
 }
 
@@ -30,6 +47,8 @@ exports.postSignup = (req, res, next) => {
   })
     .then(memberInfo => {
       if (memberInfo) {
+        console.log(req.flash('error'));
+        req.flash('error', 'Sähköposti on jo olemassa, valitse toinen.');
         return res.redirect('/signup');
       }
       return bcrypt
@@ -44,6 +63,7 @@ exports.postSignup = (req, res, next) => {
         return member.save();
         })
         .then(result => {
+          req.flash('success', 'Tillisi on luonut onnistuisesti.');
           res.redirect('/login')
         })
     })
@@ -57,7 +77,8 @@ exports.postLogin = (req, res, next) => {
     .findOne({where: {email: email}})
     .then(member => {
       if (!member) {
-        res.redirect('/login');
+        req.flash('error', 'Virheellinen sähköpostiosoite tai salasana!');
+        return res.redirect('/login');
       }
       console.log(JSON.stringify(password));
       bcrypt
@@ -72,6 +93,7 @@ exports.postLogin = (req, res, next) => {
               res.redirect('/');
             })
           }
+          req.flash('error', 'Invalid email or password!');
           res.redirect('/login');
         })
         .catch(err => console.log(err));

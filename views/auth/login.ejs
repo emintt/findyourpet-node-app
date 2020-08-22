@@ -7,6 +7,12 @@
         <div class="page-container">
             <div class="login-form-container"> 
                 <h1>Kirjaudu sisään</h1>
+                <% if(errorMessage) { %>
+                <div class="user-message user-message-error"><%= errorMessage %></div>
+                <% } %>
+                <% if(successMessage) { %>
+                <div class="user-message "><%= successMessage %></div>
+                <% } %>
                 <form method="POST" action="/login"> 
                     <div class="login-module">
                         <div class="text-field base">
@@ -18,6 +24,7 @@
                             <input id="password" type="password" name="password" placeholder= "">
                         </div>
                         <div class="search-button base">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                             <button class="button-green button login-button" type="submit">Kiraudu sisään</button>   
                         </div>
                         <div class="forgot-link">

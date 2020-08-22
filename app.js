@@ -6,6 +6,8 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const Sequelize = require('sequelize');
 const sequelize = require('./util/database');
+const csrf = require('csurf');
+const flash = require('connect-flash');
 
 // initalize sequelize with session store
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
@@ -14,6 +16,7 @@ const app = express();
 const store = new SequelizeStore({
   db: sequelize
 });
+const csrfProtection = csrf(); 
 
 const adminRoutes = require('./routes/admin');
 const webRoutes = require('./routes/web');
@@ -51,6 +54,8 @@ app.use(
     store: store
   })
 );
+app.use(csrfProtection);
+app.use(flash());
 
 app.use((req, res, next) => {
   if (!req.session.member) {
@@ -62,6 +67,12 @@ app.use((req, res, next) => {
       next();
     })
     .catch(err => console.log(err));
+});
+
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  next();
 });
 
 app.use('/admin', adminRoutes);
