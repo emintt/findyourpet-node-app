@@ -1,6 +1,15 @@
 const bcrypt = require('bcryptjs');
+const nodemailer = require('nodemailer');
+const sendgridTransport = require('nodemailer-sendgrid-transport');
+
 
 const Member = require('../models/member');
+
+const transporter = nodemailer.createTransport(sendgridTransport({
+  auth: {
+    api_key: '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'
+  }
+}));
 
 exports.getSignup = (req, res, next) => {
   let message = req.flash('error');
@@ -64,8 +73,15 @@ exports.postSignup = (req, res, next) => {
         })
         .then(result => {
           req.flash('success', 'Tillisi on luonut onnistuisesti.');
-          res.redirect('/login')
+          res.redirect('/login');
+          return transporter.sendMail({
+            to: result.email,
+            from: 'thi.nguyen@edu.amiedu.fi',
+            subject: 'Rekisteröinti onnistuisesti',
+            html: '<h1>Olet onnistuneesti rekisteröintynyt!</h1>'
+          });
         })
+        .catch(err => {console.log(err)});
     })
     .catch(err => {console.log(err)});
 }
@@ -105,5 +121,19 @@ exports.postLogout = (req, res, next) => {
   req.session.destroy(err => {
     console.log(err);
     res.redirect('/');
+  });
+}
+
+exports.getReset = (req, res, next) => {
+  let errorMessage = req.flash('error');
+  if (errorMessage.length > 0) {
+    errorMessage = errorMessage[0];
+  } else {
+    errorMessage = null;
+  }
+  res.render('auth/reset', {
+    path: '/reset', 
+    pageTitle: 'Reset Password',
+    errorMessage: errorMessage
   });
 }

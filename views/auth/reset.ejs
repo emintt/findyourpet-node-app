@@ -6,12 +6,9 @@
         <%- include('../includes/navigation.ejs') %>
         <div class="page-container">
             <div class="login-form-container"> 
-                <h1>Kirjaudu sisään</h1>
+                <h1>Salasanan palautus</h1>
                 <% if(errorMessage) { %>
                 <div class="user-message user-message-error"><%= errorMessage %></div>
-                <% } %>
-                <% if(successMessage) { %>
-                <div class="user-message "><%= successMessage %></div>
                 <% } %>
                 <form method="POST" action="/login"> 
                     <div class="login-module">
@@ -19,17 +16,9 @@
                             <label for="email">Sähköpostiosoite</label>
                             <input id="email" type="text" name="email" placeholder= "">
                         </div>
-                        <div class="text-field base">
-                            <label for="password">Salasana</label>
-                            <input id="password" type="password" name="password" placeholder= "">
-                        </div>
                         <div class="search-button base">
                             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                            <button class="button-green button login-button" type="submit">Kiraudu sisään</button>   
-                        </div>
-                        <div class="forgot-link">
-                            <span>Uhnoditko salasanasi?<a href="/reset">Paina tästä</a></span><br>
-                            <span>Haluatko luoda uuden tilin?<a href="/signup">Rekisteröi</a></span>
+                            <button class="button-green button login-button" type="submit">Lähetä salasanan palautuslinkki sähköpostitse</button>   
                         </div>
                     </div>
                 </form>     
