@@ -8,29 +8,36 @@
             <div class="login-form-container"> 
                 <h1>Luo tili</h1>
                 <% if(errorMessage) { %>
+                    
                     <div class="user-message user-message-error"><%= errorMessage %></div>
-                    <% } %>
-                <form method="post" action="/signup"> 
+                    
+                <% } %>
+                <form method="post" action="/signup" novalidate> 
                     <div class="login-module">
-                        <div class="text-field base">
+                        <div class="text-field base ">
                             <label for="name">Sinun nimi*</label>
-                            <input id="name" type="text" name="name" placeholder= "">
+                            <input class="<%= validationErrors.find(el => el.param === 'name') ? 'invalid' : '' %>"
+                                id="name" type="text" name="name" placeholder= "" value="<%= oldInput.name %>">
                         </div>
                         <div class="text-field base">
                             <label for="email">Sähköpostiosoite*</label>
-                            <input id="email" type="text" name="email" placeholder= "">
+                            <input class="<%= validationErrors.find(el => el.param === 'email') ? 'invalid' : '' %>"
+                                id="email" type="email" name="email" placeholder= "" value="<%= oldInput.email %>">
                         </div>
                         <div class="text-field base">
                           <label for="phoneNumber">Puhelinnumero*</label>
-                          <input id="phone" type="text" name="phoneNumber" placeholder= "">
+                          <input class="<%= validationErrors.find(el => el.param === 'phoneNumber') ? 'invalid' : '' %>"
+                            id="phone" type="text" name="phoneNumber" placeholder= "" value="<%= oldInput.phoneNumber %>">
                       </div>
                         <div class="text-field base">
                             <label for="password">Luoda salasana*</label>
-                            <input id="password" type="password" name="password" placeholder= "">
+                            <input class="<%= validationErrors.find(el => el.param === 'password') ? 'invalid' : '' %>"
+                                id="password" type="password" name="password" placeholder= "" value="<%= oldInput.password %>">
                         </div>
                         <div class="text-field base">
                             <label for="confirmPassword">Toista salasana*</label>
-                            <input id="confirmPassword" type="password" name="confirmPassword" placeholder= "">
+                            <input class="<%= validationErrors.find(el => el.param === 'confirmPassword') ? 'invalid' : '' %>"
+                                id="confirmPassword" type="password" name="confirmPassword" placeholder= "" value="<%= oldInput.confirmPassword %>">
                         </div>
                         <div class="search-button base">
                             <input type="hidden" name="_csrf" value="<%= csrfToken %>">

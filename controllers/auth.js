@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 const sendgridTransport = require('nodemailer-sendgrid-transport');
+const {validationResult} = require('express-validator/check');
 
 
 const Member = require('../models/member');
@@ -13,14 +14,19 @@ const transporter = nodemailer.createTransport(sendgridTransport({
 
 exports.getSignup = (req, res, next) => {
   let message = req.flash('error');
-  if (message.length > 0) {
-    message = message[0];
-  } else {
-    message = null;
-  }
+  message = message.length > 0 ? message[0] : null;
+
   res.render('auth/signup', {
     pageTitle: 'Sign up',
-    errorMessage: message
+    errorMessage: message,
+    oldInput: {
+      name: '',
+      email: '',
+      password: '',
+      phoneNumber: '',
+      confirmPassword: ''
+    },
+    validationErrors: []
   });
 }
 
@@ -40,7 +46,12 @@ exports.getLogin = (req, res, next) => {
     path: '/login', 
     pageTitle: 'Log in',
     errorMessage: errorMessage,
-    successMessage: successMessage
+    successMessage: successMessage,
+    oldInput: {
+      email: '',
+      password: ''
+    },
+    validationErrors: []
   })
 }
 
@@ -50,38 +61,43 @@ exports.postSignup = (req, res, next) => {
   const password = req.body.password;
   const phoneNumber = req.body.phoneNumber;
   const confirmPassword = req.body.confirmPassword;
-  console.log(req.body.password);
-  Member.findOne({
-    where: { email: req.body.email } 
-  })
-    .then(memberInfo => {
-      if (memberInfo) {
-        console.log(req.flash('error'));
-        req.flash('error', 'Sähköposti on jo olemassa, valitse toinen.');
-        return res.redirect('/signup');
-      }
-      return bcrypt
-        .hash(password, 12)
-        .then(hashedPassword => {
-          const member = Member.build({
-            email: email, 
-            password: hashedPassword, 
-            name: name, 
-            phoneNumber: phoneNumber
-          })
-        return member.save();
-        })
-        .then(result => {
-          req.flash('success', 'Tillisi on luonut onnistuisesti.');
-          res.redirect('/login');
-          return transporter.sendMail({
-            to: result.email,
-            from: 'thi.nguyen@edu.amiedu.fi',
-            subject: 'Rekisteröinti onnistuisesti',
-            html: '<h1>Olet onnistuneesti rekisteröintynyt!</h1>'
-          });
-        })
-        .catch(err => {console.log(err)});
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.log(errors.array());
+    return res.status(422).render('auth/signup', {
+      pageTitle: 'Sign up',
+      errorMessage: errors.array()[0].msg,
+      oldInput: {
+        name: name,
+        email: email,
+        phoneNumber: phoneNumber,
+        password: password,
+        confirmPassword: confirmPassword
+      },
+      validationErrors: errors.array()
+    });
+  }
+  
+  bcrypt
+    .hash(password, 12)
+    .then(hashedPassword => {
+      const member = Member.build({
+        email: email, 
+        password: hashedPassword, 
+        name: name, 
+        phoneNumber: phoneNumber
+      })
+    return member.save();
+    })
+    .then(result => {
+      req.flash('success', 'Tillisi on luonut onnistuisesti.');
+      res.redirect('/login');
+      return transporter.sendMail({
+        to: result.email,
+        from: 'thi.nguyen@edu.amiedu.fi',
+        subject: 'Rekisteröinti onnistuisesti',
+        html: '<h1>Olet onnistuneesti rekisteröintynyt!</h1>'
+      });
     })
     .catch(err => {console.log(err)});
 }
@@ -89,14 +105,39 @@ exports.postSignup = (req, res, next) => {
 exports.postLogin = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
+
+  const errors = validationResult(req);
+  let successMessage = req.flash('success');
+  successMessage = successMessage.length > 0 ? successMessage[0] : null;
+  if (!errors.isEmpty()) {
+    console.log(errors.array());
+    return res.status(422).render('auth/login', {
+      path: '/login', 
+      pageTitle: 'Log in',
+      errorMessage: errors.array()[0].msg,
+      successMessage: successMessage,
+      oldInput: {
+        email: email,
+        password: password
+      },
+      validationErrors: errors.array()
+    })
+  } 
   Member
     .findOne({where: {email: email}})
     .then(member => {
       if (!member) {
-        req.flash('error', 'Virheellinen sähköpostiosoite tai salasana!');
-        return res.redirect('/login');
+        return res.status(422).render('auth/login', {
+          path: '/login',
+          pageTitle: 'Log in',
+          errorMessage: 'Virheellinen sähköpostiosoite tai salasana!',
+          oldInput: {
+            email: email,
+            password: password
+          },
+          validationErrors: []
+        })
       }
-      console.log(JSON.stringify(password));
       bcrypt
         .compare(password, member.password)
         .then(result => {
@@ -109,8 +150,17 @@ exports.postLogin = (req, res, next) => {
               res.redirect('/');
             })
           }
-          req.flash('error', 'Invalid email or password!');
-          res.redirect('/login');
+          return res.status(422).render('auth/login', {
+            path: '/login',
+            pageTitle: 'Log in',
+            errorMessage: 'Virheellinen sähköpostiosoite tai salasana!',
+            successMessage: successMessage,
+            oldInput: {
+            email: email,
+            password: password
+            },
+            validationErrors: []
+          })
         })
         .catch(err => console.log(err));
     })
