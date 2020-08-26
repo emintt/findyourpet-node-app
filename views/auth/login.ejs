@@ -17,11 +17,13 @@
                     <div class="login-module">
                         <div class="text-field base">
                             <label for="email">Sähköpostiosoite</label>
-                            <input id="email" type="text" name="email" placeholder= "" value="<%= oldInput.email %>">
+                            <input class="<%= validationErrors.find(el => el.param === 'email') ? 'invalid' : '' %>"
+                                id="email" type="text" name="email" placeholder= "" value="<%= oldInput.email %>">
                         </div>
                         <div class="text-field base">
                             <label for="password">Salasana</label>
-                            <input id="password" type="password" name="password" placeholder= "" value="<%= oldInput.password %>">
+                            <input class="<%= validationErrors.find(el => el.param === 'password') ? 'invalid' : '' %>"
+                                id="password" type="password" name="password" placeholder= "" value="<%= oldInput.password %>">
                         </div>
                         <div class="search-button base">
                             <input type="hidden" name="_csrf" value="<%= csrfToken %>">

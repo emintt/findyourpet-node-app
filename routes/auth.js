@@ -20,7 +20,7 @@ router.post(
       .isEmail()
       .withMessage('Kirjoita kelvollinen sähköpostiosoite.')
       .custom((value, { req }) => {
-        return Member.findOne({
+        return Member.findOne({ 
           where: { email: value } 
         })
           .then(memberInfo => {
@@ -28,7 +28,8 @@ router.post(
               return Promise.reject('Sähköposti on jo olemassa, valitse toinen.');
             }
           })
-      }),
+      })
+      .normalizeEmail(),
     body(
       'password',
       'Anna salasana, jossa on vain merkki ja teksti ja vähintään 6 merkkiä.'
@@ -36,11 +37,13 @@ router.post(
       .isLength({min: 6})
       .isAlphanumeric()
       .trim(),
-    body('confirmPassword').custom((value, { req }) => {
-      if (value !== req.body.password) {
-        throw new Error('Salasanojen on vastattava toisiaan');
-      }
-      return true;
+    body('confirmPassword')
+      .trim()
+      .custom((value, { req }) => {
+        if (value !== req.body.password) {
+          throw new Error('Salasanojen on vastattava toisiaan');
+        }
+        return true;
     })
     
   ],
@@ -54,6 +57,7 @@ router.post(
     body('password', 'Salasanan on oltava voimassa')
       .isLength({ min: 6 })
       .isAlphanumeric()
+      .trim()
   ],
   authController.postLogin
 );

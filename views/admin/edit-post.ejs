@@ -6,16 +6,19 @@
         <%- include('../includes/navigation.ejs') %>
         <div class="page-container">
             <div class="login-form-container post-form-container"> 
+                <% if(errorMessage) { %>
+                    <div class="user-message user-message-error"><%= errorMessage %></div>
+                    <% } %> 
                 <h1>Jätä ilmoitus</h1>
-                <form method="POST" action="/admin/<% if (editing) { %>edit-post<% } else { %>add-post<% } %>">
+                <form method="POST" action="/admin/<% if (editing) { %>edit-post/<%=post.id%>?edit=true<% } else { %>add-post<% } %>">
                     <div class="post-module">
                         <label for="postTypeId">Ilmoitus tyyppi*</label>
                         <div class="text-field dropdown base">
-                            <select name="postTypeId" value="<% if (editing) { %><%=post.postType.name%><% } %>">
+                            <select name="postTypeId" value="<% if (editing || hasError) { %><%=post.postTypeId%><% } %>">
                                 <option value="0"> Valitse ilmoitustyyppi</option>
                                 <% for (let i = 0; i < postTypes.length; i++) {
-                                    if (editing) {
-                                        let selected = (post.postTypeId === postTypes[i].id) ? "selected" : ""; %>
+                                    if (editing || hasError) {
+                                        let selected = (post.postTypeId == postTypes[i].id) ? "selected" : ""; %>
                                         <option value="<%=postTypes[i].id%>" <%=selected%>><%=postTypes[i].name%></option>
                                     <% } else { %>
                                     <option value="<%=postTypes[i].id%>"><%=postTypes[i].name%></option>
@@ -26,9 +29,9 @@
                         <label for="cityId">Kunta*</label>
                         <div class="text-field dropdown base">
                             <select name="cityId">
-                                <option value="valitse kunta">Valitse kunta</option>
+                                <option value="0">Valitse kunta</option>
                                 <% for (let i = 0; i < cities.length; i++) {
-                                    if (editing) {
+                                    if (editing || hasError) {
                                         let selected = (post.postcodeArea.cityName === cities[i].name) ? "selected" : ""; %>
                                         <option value="<%=cities[i].name%>" <%=selected%>><%=cities[i].name%></option>
                                     <% } else { %>
@@ -39,16 +42,16 @@
                         </div>
                         
                         <label for="postcode">Postinumero*</label>
-                        <div class="text-field base" ><input id="postcode" type="text" name="postcode" value="<% if (editing) { %><%=post.postcode%><% } %>"></div>
+                        <div class="text-field base" ><input id="postcode" type="text" name="postcode" value="<% if (editing || hasError) { %><%=post.postcode%><% } %>"></div>
                         <label for="petDate">Kadonneet tai löytyy päivämäärä*</label>
-                        <div class="text-field base" ><input id="date" type="text" name="petDate" placeholder="DD/MM/YYYY tai DD.MM.YYYY" value="<% if (editing) { %><%=post.petDate%><% } %>"></div>
+                        <div class="text-field base" ><input id="date" type="text" name="petDate" placeholder="DD/MM/YYYY tai DD.MM.YYYY" value="<% if (editing || hasError) { %><%=post.petDate%><% } %>"></div>
                         <label for="petTypeId">Lemmikin tyyppi*</label>
                         <div class="text-field dropdown base">
                             <select name="petTypeId">
                                 <option value="Valitse tyyppi">Valitse tyyppi</option>
                             <% for (let i = 0; i < petTypes.length; i++) {
-                                if (editing) {
-                                    let selected = (post.petTypeId === petTypes[i].id) ? "selected" : ""; %>
+                                if (editing || hasError) {
+                                    let selected = (post.petTypeId == petTypes[i].id) ? "selected" : ""; %>
                                     <option value="<%=petTypes[i].id%>" <%=selected%>><%=petTypes[i].name%></option>
                                 <% } else { %>
                                 <option value="<%=petTypes[i].id%>"><%=petTypes[i].name%></option>
@@ -59,11 +62,11 @@
                         </div>
                         <label for="petGenderId">Lemmikin sukupuoli*</label>
                         <div class="text-field dropdown base">
-                            <select name="petGenderId" ><% if (editing) { %><%=post.gender%><% } %>
+                            <select name="petGenderId" ><% if (editing || hasError) { %><%=post.gender%><% } %>
                                 <option value="0">Valitse sukupuoli</option>
                                 <% for (let i = 0; i < petGenders.length; i++) {
-                                    if (editing) {
-                                        let selected = (post.petGenderId === petGenders[i].id) ? "selected" : ""; %>
+                                    if (editing || hasError) {
+                                        let selected = (post.petGenderId == petGenders[i].id) ? "selected" : ""; %>
                                         <option value="<%=petGenders[i].id%>" <%=selected%> ><%=petGenders[i].name%></option>
                                     <% } else { %>
                                         <option value="<%=petGenders[i].id%>"> <%=petGenders[i].name%> </option>
@@ -75,11 +78,11 @@
                             </select>
                         </div>
                         <label for="title">Otsikko*</label>
-                        <div class="text-field base" ><input id="title" type="text" name="title" value="<% if (editing) { %><%=post.title%><% } %>"></div>
+                        <div class="text-field base" ><input id="title" type="text" name="title" value="<% if (editing || hasError) { %><%=post.title%><% } %>"></div>
                         <label for="content">Ilmoitusteksti*</label>
-                        <div class="text-field base" ><textarea id="postText" name="content" rows="5"><% if (editing) { %><%=post.content%><% } %></textarea></div>
+                        <div class="text-field base" ><textarea id="postText" name="content" rows="5"><% if (editing || hasError) { %><%=post.content%><% } %></textarea></div>
                         <label for="imageUrl">Kuva*</label>
-                        <div class="" ><input id="kuva" type="text" name="imageUrl" value="<% if (editing) { %><%= post.images[0].imageUrl %><% } %>"></div>
+                        <div class="" ><input id="kuva" type="text" name="imageUrl" value="<% if (editing || hasError) { %><%= post.images[0].imageUrl %><% } %>"></div>
                         
                         <% if (editing) { %>
                             <input type="hidden" name="postId" value="<%= post.id %>">

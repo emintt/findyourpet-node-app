@@ -1,4 +1,6 @@
 const moment = require('moment');
+const { validationResult } = require('express-validator');
+
 const Post = require('../models/post');
 const PetType = require('../models/petType');
 const PostType = require('../models/postType');
@@ -29,7 +31,8 @@ exports.getAddPost = (req, res, next) => {
         petTypes: petTypes,
         petGenders: petGenders,
         cities: cities,
-        isAuthenticated: req.session.isLoggedIn
+        hasError: false,
+        errorMessage: null
       });
     })
     .catch(err => {console.log(err)});
@@ -41,12 +44,51 @@ exports.postAddPost = (req, res, next) => {
   const inputPetDateString = req.body.petDate;
   const petColor = req.body.petColor;
   const petGenderId = req.body.petGenderId;
-  const postcode = req.body.postcode;
+  const cityName = req.body.cityId;
+  const postcode = req.body.postcode; 
   const postTypeId = req.body.postTypeId;
   const petTypeId = req.body.petTypeId;
-  const imageUrl = req.body.imageUrl; 
-
+  const imageUrl = req.body.imageUrl;  
   const petDate = moment.utc(inputPetDateString, "DD/MM/YYYY").format("YYYY-MM-DD");
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    console.log(errors.array());
+    const postTypes = PostType.findAll();
+    const petTypes = PetType.findAll();
+    const petGenders = PetGender.findAll();
+    const cities = City.findAll({
+      order: [['name', 'ASC']]
+    });
+    return Promise.all([postTypes, petTypes, petGenders, cities])
+      .then(([postTypes, petTypes, petGenders, cities]) => {
+        
+        return res.status(422).render('admin/edit-post', {
+          pageTitle: 'Add post',
+          editing: false,
+          hasError: true,
+          postTypes: postTypes,
+          petTypes: petTypes,
+          petGenders: petGenders,
+          cities: cities,
+          post: {
+            title: title,
+            content: content,
+            petDate: inputPetDateString,
+            petColor: petColor,
+            petGenderId: petGenderId,
+            postcode: postcode,
+            postcodeArea: {cityName: cityName},
+            postTypeId: postTypeId,
+            petTypeId: petTypeId,
+            images: [{imageUrl: imageUrl}]
+          },
+          errorMessage: errors.array()[0].msg
+        });
+      })
+      .catch(err => {console.log(err)});
+  }
+
   //console.log(req.session.member instanceof Member); -> false
   // to create post is a short cut of build + save
   Post.create({
@@ -107,12 +149,14 @@ exports.getEditPost = (req, res, next) => {
       res.render('admin/edit-post', {
         pageTitle: 'Edit Post',
         editing: editMode, 
+        hasError: false,
         // pass the post data we just fetched to the view.
         post: post,
         postTypes: postTypes,
         petTypes: petTypes,
         petGenders: petGenders,
-        cities: cities
+        cities: cities,
+        errorMessage: null
       });
     })
     
@@ -122,13 +166,53 @@ exports.postEditPost = (req, res, next) => {
   const postId = req.body.postId;
   const updatedTitle = req.body.title;
   const updatedContent = req.body.content;
-  const updatedPetDate = req.body.petDate;
+  const inputPetDateString = req.body.petDate;
   const updatedpetColor = req.body.petColor;
-  const updatedGender = req.body.gender;
+  const updatedPetGenderId = req.body.petGenderId;
   const updatedPostcode = req.body.postcode;
   const updatedPostTypeId = req.body.postTypeId;
   const updatedPetTypeId = req.body.petTypeId;
+
+  const updatedCityName = req.body.cityId;
   const updatedImageUrl = req.body.imageUrl;
+  const updatedPetDate = moment.utc(inputPetDateString, "DD/MM/YYYY").format("YYYY-MM-DD");
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.log(errors.array());
+    const postTypes = PostType.findAll();
+    const petTypes = PetType.findAll();
+    const petGenders = PetGender.findAll();
+    const cities = City.findAll({
+      order: [['name', 'ASC']]
+    });
+    return Promise.all([postTypes, petTypes, petGenders, cities])
+      .then(([postTypes, petTypes, petGenders, cities]) => {
+        
+        return res.status(422).render('admin/edit-post', {
+          pageTitle: 'Edit post',
+          editing: true,
+          hasError: true,
+          postTypes: postTypes,
+          petTypes: petTypes,
+          petGenders: petGenders,
+          cities: cities,
+          post: {
+            title: updatedTitle,
+            content: updatedContent,
+            petDate: updatedPetDate,
+            petColor: updatedpetColor,
+            petGenderId: updatedPetGenderId,
+            postcode: updatedPostcode,
+            postcodeArea: {cityName: updatedCityName},
+            postTypeId: updatedPostTypeId,
+            petTypeId: updatedPetTypeId,
+            images: [{imageUrl: updatedImageUrl}]
+          },
+          errorMessage: errors.array()[0].msg
+        });
+      })
+      .catch(err => {console.log(err)});
+  }
   Post.findByPk(postId)
     .then(post => {
       console.log(JSON.stringify(post));
@@ -136,7 +220,7 @@ exports.postEditPost = (req, res, next) => {
       post.content = updatedContent;
       post.petDate = updatedPetDate;
       post.petColor = updatedpetColor;
-      post.gender = updatedGender;
+      post.petGenderId = updatedPetGenderId;
       post.postcode = updatedPostcode;
       post.postTypeId = updatedPostTypeId;
       post.petTypeId = updatedPetTypeId;

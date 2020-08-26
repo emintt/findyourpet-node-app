@@ -24,12 +24,6 @@ const Post = sequelize.define('post', {
     type: Sequelize.DATEONLY,
     allowNull: false,
     field: 'pet_date',
-    validate: {
-      isDate: {
-        args: true,
-        msg: 'Pitää olla kelvollinen päiväänmäärä muodossa esim. 12/06/2020'
-      } 
-    },
     get() {
       const rawValue = this.getDataValue('petDate');
       return moment(rawValue).format('DD/MM/YYYY');

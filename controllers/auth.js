@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 const sendgridTransport = require('nodemailer-sendgrid-transport');
-const {validationResult} = require('express-validator/check');
+const { validationResult } = require('express-validator/check');
 
 
 const Member = require('../models/member');
@@ -71,7 +71,7 @@ exports.postSignup = (req, res, next) => {
         name: name,
         email: email,
         phoneNumber: phoneNumber,
-        password: password,
+        password: password, 
         confirmPassword: confirmPassword
       },
       validationErrors: errors.array()
@@ -92,14 +92,18 @@ exports.postSignup = (req, res, next) => {
     .then(result => {
       req.flash('success', 'Tillisi on luonut onnistuisesti.');
       res.redirect('/login');
-      return transporter.sendMail({
-        to: result.email,
-        from: 'thi.nguyen@edu.amiedu.fi',
-        subject: 'Rekisteröinti onnistuisesti',
-        html: '<h1>Olet onnistuneesti rekisteröintynyt!</h1>'
-      });
+      // return transporter.sendMail({
+      //   to: result.email,
+      //   from: 'thi.nguyen@edu.amiedu.fi',
+      //   subject: 'Rekisteröinti onnistuisesti',
+      //   html: '<h1>Olet onnistuneesti rekisteröintynyt!</h1>'
+      // });
     })
-    .catch(err => {console.log(err)});
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 }
 
 exports.postLogin = (req, res, next) => {
@@ -131,6 +135,7 @@ exports.postLogin = (req, res, next) => {
           path: '/login',
           pageTitle: 'Log in',
           errorMessage: 'Virheellinen sähköpostiosoite tai salasana!',
+          successMessage: successMessage,
           oldInput: {
             email: email,
             password: password
@@ -162,9 +167,16 @@ exports.postLogin = (req, res, next) => {
             validationErrors: []
           })
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+          console.log(err);
+          res.redirect('/login');
+        });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 }
 
 exports.postLogout = (req, res, next) => {
