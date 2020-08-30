@@ -39,6 +39,7 @@ router.post(
     body('petGenderId', 'Ole hyvä ja valitse lemmikin sukupuoli')
       .isInt({ min: 1, max: 3}),
     body('title', 'Kirjoita vähintän 5 merkkiä otsikko tekstillä')
+      .isString()
       .isLength({ min: 5 })
       .trim(),
     body('content', 'Kirjoita riittävän pitkä ilmoitustekstissä')
@@ -78,6 +79,7 @@ router.post(
       .isLength({ min: 5 })
       .trim(),
     body('content', 'Kirjoita riittävän pitkä ilmoitustekstissä')
+      .isString()
       .isLength({ min: 8, max: 400 })
       .trim(),
     body('imageUrl', 'Kirjoita kelvollinen kuvan linkki')

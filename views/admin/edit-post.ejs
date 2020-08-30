@@ -9,12 +9,13 @@
                 <% if(errorMessage) { %>
                     <div class="user-message user-message-error"><%= errorMessage %></div>
                     <% } %> 
-                <h1>Jätä ilmoitus</h1>
-                <form method="POST" action="/admin/<% if (editing) { %>edit-post/<%=post.id%>?edit=true<% } else { %>add-post<% } %>">
+                <h1><% if (editing) { %> Päivitä ilmoitus <% } else { %>Jätä ilmoitus <% } %></h1>
+                <form method="POST" action="/admin/<% if (editing) { %>edit-post<% } else { %>add-post<% } %>">
                     <div class="post-module">
                         <label for="postTypeId">Ilmoitus tyyppi*</label>
                         <div class="text-field dropdown base">
-                            <select name="postTypeId" value="<% if (editing || hasError) { %><%=post.postTypeId%><% } %>">
+                            <select class="<%= validationErrors.find(el => el.param === 'postTypeId') ? 'invalid' : '' %>"
+                                name="postTypeId" value="<% if (editing || hasError) { %><%=post.postTypeId%><% } %>">
                                 <option value="0"> Valitse ilmoitustyyppi</option>
                                 <% for (let i = 0; i < postTypes.length; i++) {
                                     if (editing || hasError) {
@@ -28,7 +29,7 @@
                         </div>
                         <label for="cityId">Kunta*</label>
                         <div class="text-field dropdown base">
-                            <select name="cityId">
+                            <select name="cityId" class="<%= validationErrors.find(el => el.param === 'cityId') ? 'invalid' : '' %>">
                                 <option value="0">Valitse kunta</option>
                                 <% for (let i = 0; i < cities.length; i++) {
                                     if (editing || hasError) {
@@ -42,12 +43,18 @@
                         </div>
                         
                         <label for="postcode">Postinumero*</label>
-                        <div class="text-field base" ><input id="postcode" type="text" name="postcode" value="<% if (editing || hasError) { %><%=post.postcode%><% } %>"></div>
+                        <div class="text-field base" >
+                            <input class="<%= validationErrors.find(el => el.param === 'postcode') ? 'invalid' : '' %>"
+                                id="postcode" type="text" name="postcode" value="<% if (editing || hasError) { %><%=post.postcode%><% } %>">
+                        </div>
                         <label for="petDate">Kadonneet tai löytyy päivämäärä*</label>
-                        <div class="text-field base" ><input id="date" type="text" name="petDate" placeholder="DD/MM/YYYY tai DD.MM.YYYY" value="<% if (editing || hasError) { %><%=post.petDate%><% } %>"></div>
+                        <div class="text-field base" >
+                            <input class="<%= validationErrors.find(el => el.param === 'petDate') ? 'invalid' : '' %>"
+                                id="date" type="text" name="petDate" placeholder="DD/MM/YYYY tai DD.MM.YYYY" value="<% if (editing || hasError) { %><%=post.petDate%><% } %>">
+                        </div>
                         <label for="petTypeId">Lemmikin tyyppi*</label>
                         <div class="text-field dropdown base">
-                            <select name="petTypeId">
+                            <select name="petTypeId" class="<%= validationErrors.find(el => el.param === 'petTypeId') ? 'invalid' : '' %>">
                                 <option value="Valitse tyyppi">Valitse tyyppi</option>
                             <% for (let i = 0; i < petTypes.length; i++) {
                                 if (editing || hasError) {
@@ -62,7 +69,8 @@
                         </div>
                         <label for="petGenderId">Lemmikin sukupuoli*</label>
                         <div class="text-field dropdown base">
-                            <select name="petGenderId" ><% if (editing || hasError) { %><%=post.gender%><% } %>
+                            <select class="<%= validationErrors.find(el => el.param === 'petGenderId') ? 'invalid' : '' %>"
+                                name="petGenderId" ><% if (editing || hasError) { %><%=post.gender%><% } %>
                                 <option value="0">Valitse sukupuoli</option>
                                 <% for (let i = 0; i < petGenders.length; i++) {
                                     if (editing || hasError) {
@@ -78,11 +86,20 @@
                             </select>
                         </div>
                         <label for="title">Otsikko*</label>
-                        <div class="text-field base" ><input id="title" type="text" name="title" value="<% if (editing || hasError) { %><%=post.title%><% } %>"></div>
+                        <div class="text-field base" >
+                            <input class="<%= validationErrors.find(el => el.param === 'title') ? 'invalid' : '' %>"
+                                id="title" type="text" name="title" value="<% if (editing || hasError) { %><%=post.title%><% } %>">
+                        </div>
                         <label for="content">Ilmoitusteksti*</label>
-                        <div class="text-field base" ><textarea id="postText" name="content" rows="5"><% if (editing || hasError) { %><%=post.content%><% } %></textarea></div>
+                        <div class="text-field base" >
+                            <textarea class="<%= validationErrors.find(el => el.param === 'content') ? 'invalid' : '' %>"
+                                id="postText" name="content" rows="5"><% if (editing || hasError) { %><%=post.content%><% } %></textarea>
+                        </div>
                         <label for="imageUrl">Kuva*</label>
-                        <div class="" ><input id="kuva" type="text" name="imageUrl" value="<% if (editing || hasError) { %><%= post.images[0].imageUrl %><% } %>"></div>
+                        <div class="text-field base" >
+                            <input class="<%= validationErrors.find(el => el.param === 'imageUrl') ? 'invalid' : '' %>"
+                                id="kuva" type="text" name="imageUrl" value="<% if (editing || hasError) { %><%= post.images[0].imageUrl %><% } %>">
+                        </div>
                         
                         <% if (editing) { %>
                             <input type="hidden" name="postId" value="<%= post.id %>">

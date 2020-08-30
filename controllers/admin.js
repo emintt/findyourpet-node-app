@@ -32,7 +32,8 @@ exports.getAddPost = (req, res, next) => {
         petGenders: petGenders,
         cities: cities,
         hasError: false,
-        errorMessage: null
+        errorMessage: null,
+        validationErrors: []
       });
     })
     .catch(err => {console.log(err)});
@@ -83,7 +84,8 @@ exports.postAddPost = (req, res, next) => {
             petTypeId: petTypeId,
             images: [{imageUrl: imageUrl}]
           },
-          errorMessage: errors.array()[0].msg
+          errorMessage: errors.array()[0].msg,
+          validationErrors: []
         });
       })
       .catch(err => {console.log(err)});
@@ -156,7 +158,8 @@ exports.getEditPost = (req, res, next) => {
         petTypes: petTypes,
         petGenders: petGenders,
         cities: cities,
-        errorMessage: null
+        errorMessage: null,
+        validationErrors: []
       });
     })
     
@@ -176,7 +179,7 @@ exports.postEditPost = (req, res, next) => {
   const updatedCityName = req.body.cityId;
   const updatedImageUrl = req.body.imageUrl;
   const updatedPetDate = moment.utc(inputPetDateString, "DD/MM/YYYY").format("YYYY-MM-DD");
-  const errors = validationResult(req);
+  const errors = validationResult(req); 
   if (!errors.isEmpty()) {
     console.log(errors.array());
     const postTypes = PostType.findAll();
@@ -199,16 +202,18 @@ exports.postEditPost = (req, res, next) => {
           post: {
             title: updatedTitle,
             content: updatedContent,
-            petDate: updatedPetDate,
+            petDate: inputPetDateString,
             petColor: updatedpetColor,
             petGenderId: updatedPetGenderId,
             postcode: updatedPostcode,
             postcodeArea: {cityName: updatedCityName},
             postTypeId: updatedPostTypeId,
             petTypeId: updatedPetTypeId,
-            images: [{imageUrl: updatedImageUrl}]
+            images: [{imageUrl: updatedImageUrl}],
+            id: postId
           },
-          errorMessage: errors.array()[0].msg
+          errorMessage: errors.array()[0].msg,
+          validationErrors: errors.array()
         });
       })
       .catch(err => {console.log(err)});
