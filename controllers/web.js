@@ -25,7 +25,11 @@ exports.getIndex = (req, res, next) => {
         path: '/'
       });
     })
-    .catch(err => {console.log(err)});
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };
 
 // for route get posts/:postId
@@ -34,7 +38,7 @@ exports.getPost = (req, res, next) => {
   Post.findByPk(postId, {
     attributes: { 
       include: [
-        [sequelize.fn('DATE_FORMAT', sequelize.col('post.created_at'), '%d.%m.%Y'), 'createdAt'], 
+        [sequelize.fn('DATE_FORMAT', sequelize.col('post.created_at'), '%d/%m/%Y'), 'createdAt'], 
         // [sequelize.fn('DATE_FORMAT', sequelize.col('post.pet_date'), '%d.%m.%Y'), 'petDate']
       ]},
     include: [
@@ -53,6 +57,10 @@ exports.getPost = (req, res, next) => {
         pageTitle: 'Post Detail'
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 }
 

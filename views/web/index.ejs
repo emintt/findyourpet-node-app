@@ -14,7 +14,7 @@
                 <% for (let post of posts) { %>
                   <a href="/posts/<%= post.id %>" class="media tile">
                       
-                      <img class="media-image" src="<%= post.images[0].imageUrl %>" alt="<%=post.title%>>">
+                      <img class="media-image" src="/<%= post.images[0].imageUrl %>" alt="<%=post.title%>>">
                       
                       <div class="media-body"> 
                         <p><%= post.petType.name %></p><br>

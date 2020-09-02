@@ -12,6 +12,7 @@ const Member = require('../models/member');
 
 
 const sequelize = require('../util/database');
+const fileHelper = require('../util/file');
 
 
 exports.getAddPost = (req, res, next) => {
@@ -36,7 +37,11 @@ exports.getAddPost = (req, res, next) => {
         validationErrors: []
       });
     })
-    .catch(err => {console.log(err)});
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 } 
 
 exports.postAddPost = (req, res, next) => {
@@ -49,11 +54,12 @@ exports.postAddPost = (req, res, next) => {
   const postcode = req.body.postcode; 
   const postTypeId = req.body.postTypeId;
   const petTypeId = req.body.petTypeId;
-  const imageUrl = req.body.imageUrl;  
+  const image = req.file;   
   const petDate = moment.utc(inputPetDateString, "DD/MM/YYYY").format("YYYY-MM-DD");
+  
   const errors = validationResult(req);
-
   if (!errors.isEmpty()) {
+    console.log(image);
     console.log(errors.array());
     const postTypes = PostType.findAll();
     const petTypes = PetType.findAll();
@@ -82,15 +88,56 @@ exports.postAddPost = (req, res, next) => {
             postcodeArea: {cityName: cityName},
             postTypeId: postTypeId,
             petTypeId: petTypeId,
-            images: [{imageUrl: imageUrl}]
+            imageName: image.originalname
+            //images: [{imageUrl: imageUrl}]
           },
           errorMessage: errors.array()[0].msg,
           validationErrors: []
         });
       })
-      .catch(err => {console.log(err)});
+      .catch(err => {
+        console.log(err);
+      });
   }
-
+  if (!image) {
+    const postTypes = PostType.findAll();
+    const petTypes = PetType.findAll();
+    const petGenders = PetGender.findAll();
+    const cities = City.findAll({
+      order: [['name', 'ASC']]
+    });
+    return Promise.all([postTypes, petTypes, petGenders, cities])
+      .then(([postTypes, petTypes, petGenders, cities]) => {
+        
+        return res.status(422).render('admin/edit-post', {
+          pageTitle: 'Add post',
+          editing: false,
+          hasError: true,
+          postTypes: postTypes,
+          petTypes: petTypes,
+          petGenders: petGenders,
+          cities: cities,
+          post: {
+            title: title,
+            content: content,
+            petDate: inputPetDateString,
+            petColor: petColor,
+            petGenderId: petGenderId,
+            postcode: postcode,
+            postcodeArea: {cityName: cityName},
+            postTypeId: postTypeId,
+            petTypeId: petTypeId
+            //images: [{imageUrl: imageUrl}]
+          },
+          errorMessage: 'Valitse .png, .jpeg . tai .jpg tyyppi kuva.',
+          validationErrors: []
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+  const imageUrl = image.path;
   //console.log(req.session.member instanceof Member); -> false
   // to create post is a short cut of build + save
   Post.create({
@@ -106,6 +153,7 @@ exports.postAddPost = (req, res, next) => {
     })
     .then(post => {
       console.log('Post Created');
+
       post.createImage({
         imageUrl: imageUrl,
         postId: post.id
@@ -114,7 +162,13 @@ exports.postAddPost = (req, res, next) => {
     .then(result => {
       res.redirect('/admin/posts');
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      console.log(error);
+
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 }
 
 exports.getEditPost = (req, res, next) => {
@@ -163,7 +217,11 @@ exports.getEditPost = (req, res, next) => {
       });
     })
     
-    .catch(err => {console.log(err)});
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 }
 exports.postEditPost = (req, res, next) => {
   const postId = req.body.postId;
@@ -177,7 +235,7 @@ exports.postEditPost = (req, res, next) => {
   const updatedPetTypeId = req.body.petTypeId;
 
   const updatedCityName = req.body.cityId;
-  const updatedImageUrl = req.body.imageUrl;
+  const image = req.file;
   const updatedPetDate = moment.utc(inputPetDateString, "DD/MM/YYYY").format("YYYY-MM-DD");
   const errors = validationResult(req); 
   if (!errors.isEmpty()) {
@@ -209,14 +267,16 @@ exports.postEditPost = (req, res, next) => {
             postcodeArea: {cityName: updatedCityName},
             postTypeId: updatedPostTypeId,
             petTypeId: updatedPetTypeId,
-            images: [{imageUrl: updatedImageUrl}],
+            //images: [{imageUrl: updatedImageUrl}],
             id: postId
           },
           errorMessage: errors.array()[0].msg,
           validationErrors: errors.array()
         });
       })
-      .catch(err => {console.log(err)});
+      .catch(err => {
+        console.log(err);
+      });
   }
   Post.findByPk(postId)
     .then(post => {
@@ -229,20 +289,28 @@ exports.postEditPost = (req, res, next) => {
       post.postcode = updatedPostcode;
       post.postTypeId = updatedPostTypeId;
       post.petTypeId = updatedPetTypeId;
+      
+      if (image) {
+        post.getImages()
+          .then(images => {
+            fileHelper.deleteFile(images[0].imageUrl);
+          })
+          .catch(err => next(err));
+        Image.update(
+          {imageUrl: image.path }, 
+          {where: {postId: postId } 
+        });
+      }
       return post.save();
-    }).
-    then(post => {
-      Image.update(
-        {imageUrl: req.body.imageUrl}, 
-        {where: {postId: post.id } 
-      });
     })
     .then(result => {
       console.log('UPDATED POST');
       res.redirect('/admin/posts');
     })
     .catch(err => {
-      console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 } 
 
@@ -271,7 +339,11 @@ exports.getPosts = (req, res, next) => {
         path: '/posts'
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 }
 
 exports.postDeletePost = (req, res, next) => {
@@ -279,13 +351,25 @@ exports.postDeletePost = (req, res, next) => {
   console.log(postId);
   Post.findByPk(postId)
     .then(post => {
+      if (!post) {
+        return next(new Error('Post not found'));
+      }
+      post.getImages()
+        .then(images => {
+          fileHelper.deleteFile(images[0].imageUrl);
+        })
+        .catch(err => next(err));
       return post.destroy();
     })
     .then(result => {
       console.log('DESTROYED POST');
       res.redirect('/admin/posts');
     })
-    .catch(err => {console.log(err)});
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 }
 
 

@@ -8,6 +8,7 @@ const Sequelize = require('sequelize');
 const sequelize = require('./util/database');
 const csrf = require('csurf');
 const flash = require('connect-flash');
+const multer = require('multer');
 
 // initalize sequelize with session store
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
@@ -17,6 +18,29 @@ const store = new SequelizeStore({
   db: sequelize
 });
 const csrfProtection = csrf(); 
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'images');
+  },
+  filename: (req, file, cb) => {
+    cb(null, new Date().toISOString() + '-'+ file.originalname);
+  }
+});
+
+const fileFilter = (req, file, cb) => {
+   if (
+     file.mimetype === 'image/png' ||
+     file.mimetype === 'image/jpg' ||
+     file.mimetype === 'image/jpeg'
+   ) {
+    cb(null, true);
+   } else {
+    cb(null, false);
+   }
+};
+
+app.set('view engine', 'ejs');
+app.set('views', 'views');
 
 const adminRoutes = require('./routes/admin');
 const webRoutes = require('./routes/web');
@@ -40,12 +64,12 @@ const Region = require('./models/region');
 
 
 
-app.set('view engine', 'ejs');
-app.set('views', 'views');
 
 
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single('image'));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use(
   session({
     secret: 'my secret', 
@@ -56,20 +80,6 @@ app.use(
 );
 app.use(csrfProtection);
 app.use(flash());
-
-app.use((req, res, next) => {
-  if (!req.session.member) {
-    return next();
-  }
-  Member.findByPk(req.session.member.id)
-    .then(member => {
-      req.member = member;
-      res.locals.memberName = req.session.member.name;
-      next();
-    })
-    .catch(err => console.log(err));
-});
-
 app.use((req, res, next) => {
   res.locals.isAuthenticated = req.session.isLoggedIn;
   res.locals.csrfToken = req.csrfToken();
@@ -77,11 +87,39 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use((req, res, next) => {
+  if (!req.session.member) {
+    return next();
+  }
+  Member.findByPk(req.session.member.id)
+    .then(member => {
+      if (!member) {
+        return next();
+      }
+      req.member = member;
+      res.locals.memberName = req.member.name;
+      next();
+    })
+    .catch(err => {
+      next(new Error(err));
+    });
+});
+
 app.use('/admin', adminRoutes);
 app.use(webRoutes);
 app.use(authRoutes);
 
+app.get('/500', errorController.get500);
+
 app.use(errorController.get404);
+
+app.use((error, req, res, next) => {
+  res.status(500).render('500', { 
+  pageTitle: 'Error',
+  isAuthenticated: req.session.isLoggedIn,
+  memberName: req.session.member.name
+  });
+});
 
 Region.hasMany(City, { foreignKey: { name: 'regionName', allowNull: false } });
 City.belongsTo(Region, { foreignKey: { name: 'regionName', allowNull: false } });
@@ -119,5 +157,7 @@ sequelize
   .then(result => {
     app.listen(3000);
   })
-  .catch(err => {console.log(err)});
+  .catch(err => {
+    console.log(err);
+  });
 

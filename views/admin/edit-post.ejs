@@ -10,7 +10,7 @@
                     <div class="user-message user-message-error"><%= errorMessage %></div>
                     <% } %> 
                 <h1><% if (editing) { %> Päivitä ilmoitus <% } else { %>Jätä ilmoitus <% } %></h1>
-                <form method="POST" action="/admin/<% if (editing) { %>edit-post<% } else { %>add-post<% } %>">
+                <form method="POST" action="/admin/<% if (editing) { %>edit-post<% } else { %>add-post<% } %>" enctype="multipart/form-data">
                     <div class="post-module">
                         <label for="postTypeId">Ilmoitus tyyppi*</label>
                         <div class="text-field dropdown base">
@@ -95,10 +95,10 @@
                             <textarea class="<%= validationErrors.find(el => el.param === 'content') ? 'invalid' : '' %>"
                                 id="postText" name="content" rows="5"><% if (editing || hasError) { %><%=post.content%><% } %></textarea>
                         </div>
-                        <label for="imageUrl">Kuva*</label>
-                        <div class="text-field base" >
-                            <input class="<%= validationErrors.find(el => el.param === 'imageUrl') ? 'invalid' : '' %>"
-                                id="kuva" type="text" name="imageUrl" value="<% if (editing || hasError) { %><%= post.images[0].imageUrl %><% } %>">
+                        
+                        <label for="image">Kuva*</label>
+                        <div class="" >
+                            <input id="image" type="file" name="image" value="<% if (editing || hasError) { %><%=post.imageName%><% } %>">
                         </div>
                         
                         <% if (editing) { %>
