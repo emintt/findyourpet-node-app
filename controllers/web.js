@@ -64,3 +64,9 @@ exports.getPost = (req, res, next) => {
     });
 }
 
+exports.getPrivacyPolicy = (req, res, next) => {
+  res.render('web/privacy-policy', { 
+    pageTitle: 'Privacy Policy'
+  });
+}
+

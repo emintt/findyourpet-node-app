@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 const sendgridTransport = require('nodemailer-sendgrid-transport');
 const { validationResult } = require('express-validator');
-
+ 
 
 const Member = require('../models/member');
 
@@ -112,7 +112,7 @@ exports.postLogin = (req, res, next) => {
 
   const errors = validationResult(req);
   let successMessage = req.flash('success');
-  successMessage = successMessage.length > 0 ? successMessage[0] : null;
+  successMessage = (successMessage && successMessage.length > 0) ? successMessage[0] : null;
   if (!errors.isEmpty()) {
     console.log(errors.array());
     return res.status(422).render('auth/login', {
@@ -175,7 +175,8 @@ exports.postLogin = (req, res, next) => {
     .catch(err => {
       const error = new Error(err);
       error.httpStatusCode = 500;
-      return next(error);
+      next(error);
+      return error;
     });
 }
 

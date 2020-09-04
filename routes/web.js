@@ -9,6 +9,7 @@ const router = express.Router();
 router.get('/', webController.getIndex);
 // post detail
 router.get('/posts/:postId', webController.getPost);
+router.get('/privacy-policy', webController.getPrivacyPolicy);
 
 
 module.exports = router;
