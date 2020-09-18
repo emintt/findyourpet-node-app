@@ -2,6 +2,7 @@
 </head>
 
 <body>
+  <%# controllers/web -> getIndex  %>
     <div class="container">
         <%- include('../includes/navigation.ejs') %>
         <div class="page-container">
@@ -11,9 +12,10 @@
                 <div class="heading tile">
                     <h2>Viimeaikaiset lemmikit</h2>
                 </div>
+                <%# Näyttää kaikki ilmoitukset lohkona  %>
                 <% for (let post of posts) { %>
                   <a href="/posts/<%= post.id %>" class="media tile">
-                      
+                    <%# imageUrl from images (array ob object) that loaded with post (1 post -> n image)%>
                       <img class="media-image" src="/<%= post.images[0].imageUrl %>" alt="<%=post.title%>>">
                       
                       <div class="media-body"> 

@@ -11,8 +11,10 @@ const PoscodeArea = require('../models/postcodeArea');
 
 const router = express.Router(); 
 
-// /admin/add-post => GET
+// /admin/add-post => GET 
 router.get('/add-post', isAuth, adminController.getAddPost);
+// /admin/add-post => POST
+// Validate POST routes 
 router.post(
   '/add-post', 
   isAuth, 
@@ -102,7 +104,9 @@ router.post(
   isAuth, 
   adminController.postEditPost
 );
+// /admin/posts => GET 
 router.get('/posts', isAuth, adminController.getPosts);
+// /admin/delete-post => POST 
 router.post('/delete-post', isAuth, adminController.postDeletePost);
 
 

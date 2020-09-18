@@ -7,8 +7,9 @@ const webController = require('../controllers/web');
 const router = express.Router();
 
 router.get('/', webController.getIndex);
-// post detail
+// post-detail
 router.get('/posts/:postId', webController.getPost);
+router.post('/search-posts', webController.postSearchPosts);
 router.get('/privacy-policy', webController.getPrivacyPolicy);
 
 

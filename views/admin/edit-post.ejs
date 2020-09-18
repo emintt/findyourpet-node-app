@@ -2,6 +2,7 @@
 </head>
 
 <body>
+    <%# this view is used for both /admin/edit-post (if editing is true) and /admin/add-post %>
     <div class="container">
         <%- include('../includes/navigation.ejs') %>
         <div class="page-container">
@@ -17,7 +18,10 @@
                             <select class="<%= validationErrors.find(el => el.param === 'postTypeId') ? 'invalid' : '' %>"
                                 name="postTypeId" value="<% if (editing || hasError) { %><%=post.postTypeId%><% } %>">
                                 <option value="0"> Valitse ilmoitustyyppi</option>
+                                <%# List all names from postType table in database (postTypes: array of objects)%>
                                 <% for (let i = 0; i < postTypes.length; i++) {
+                                    <%# if we are in editing mode or has error,
+                                    add selected option to only post type that has id match with postTypeId of post%>
                                     if (editing || hasError) {
                                         let selected = (post.postTypeId == postTypes[i].id) ? "selected" : ""; %>
                                         <option value="<%=postTypes[i].id%>" <%=selected%>><%=postTypes[i].name%></option>
@@ -31,7 +35,10 @@
                         <div class="text-field dropdown base">
                             <select name="cityId" class="<%= validationErrors.find(el => el.param === 'cityId') ? 'invalid' : '' %>">
                                 <option value="0">Valitse kunta</option>
+                                <%# List all city names from city table of database (cities is an array of objects)%>
                                 <% for (let i = 0; i < cities.length; i++) {
+                                    <%# If we're in editing mode or hasError is true, 
+                                    add selected option to only name of city that match cityName of postcodeArea of post%>
                                     if (editing || hasError) {
                                         let selected = (post.postcodeArea.cityName === cities[i].name) ? "selected" : ""; %>
                                         <option value="<%=cities[i].name%>" <%=selected%>><%=cities[i].name%></option>
@@ -44,25 +51,34 @@
                         
                         <label for="postcode">Postinumero*</label>
                         <div class="text-field base" >
+                            <%# Add class invalid if validation error found %>
+                            <%# Display postcode when we are in editing mode or has error%>
                             <input class="<%= validationErrors.find(el => el.param === 'postcode') ? 'invalid' : '' %>"
-                                id="postcode" type="text" name="postcode" value="<% if (editing || hasError) { %><%=post.postcode%><% } %>">
+                                id="postcode" type="text" name="postcode" 
+                                value="<% if (editing || hasError) { %><%=post.postcode%><% } %>">
                         </div>
                         <label for="petDate">Kadonneet tai löytyy päivämäärä*</label>
                         <div class="text-field base" >
+                            <%# Add class invalid if validation error found %>
+                            <%# Display petDate when we are in editing mode or has error%>
                             <input class="<%= validationErrors.find(el => el.param === 'petDate') ? 'invalid' : '' %>"
                                 id="date" type="text" name="petDate" placeholder="DD/MM/YYYY tai DD.MM.YYYY" value="<% if (editing || hasError) { %><%=post.petDate%><% } %>">
                         </div>
                         <label for="petTypeId">Lemmikin tyyppi*</label>
                         <div class="text-field dropdown base">
+                            <%# Add class invalid if validation error found %>
                             <select name="petTypeId" class="<%= validationErrors.find(el => el.param === 'petTypeId') ? 'invalid' : '' %>">
                                 <option value="Valitse tyyppi">Valitse tyyppi</option>
-                            <% for (let i = 0; i < petTypes.length; i++) {
-                                if (editing || hasError) {
-                                    let selected = (post.petTypeId == petTypes[i].id) ? "selected" : ""; %>
-                                    <option value="<%=petTypes[i].id%>" <%=selected%>><%=petTypes[i].name%></option>
-                                <% } else { %>
-                                <option value="<%=petTypes[i].id%>"><%=petTypes[i].name%></option>
-                                <% } %>
+                                <%# List all names from petType table in database (petTypes: array of objects)%>
+                                <% for (let i = 0; i < petTypes.length; i++) {
+                                    <%# if we are in editing mode or has error,
+                                    add selected option to only pet type that has id match with petTypeId of post%>
+                                    if (editing || hasError) {
+                                        let selected = (post.petTypeId == petTypes[i].id) ? "selected" : ""; %>
+                                        <option value="<%=petTypes[i].id%>" <%=selected%>><%=petTypes[i].name%></option>
+                                    <% } else { %>
+                                    <option value="<%=petTypes[i].id%>"><%=petTypes[i].name%></option>
+                                    <% } %>
                             <% } %>
                             
                             </select>
@@ -72,6 +88,8 @@
                             <select class="<%= validationErrors.find(el => el.param === 'petGenderId') ? 'invalid' : '' %>"
                                 name="petGenderId" ><% if (editing || hasError) { %><%=post.gender%><% } %>
                                 <option value="0">Valitse sukupuoli</option>
+                                <%# Output selected option if in editing mode or when has errors, 
+                                otherwise list all name from pet gender table in database%>
                                 <% for (let i = 0; i < petGenders.length; i++) {
                                     if (editing || hasError) {
                                         let selected = (post.petGenderId == petGenders[i].id) ? "selected" : ""; %>
@@ -87,23 +105,36 @@
                         </div>
                         <label for="title">Otsikko*</label>
                         <div class="text-field base" >
+                            <%# Add class invalid if validation error found %>
+                            <%# Display title when we are in editing mode or has error%>
                             <input class="<%= validationErrors.find(el => el.param === 'title') ? 'invalid' : '' %>"
                                 id="title" type="text" name="title" value="<% if (editing || hasError) { %><%=post.title%><% } %>">
                         </div>
                         <label for="content">Ilmoitusteksti*</label>
                         <div class="text-field base" >
+                            <%# Add class invalid if validation error found %>
+                            <%# Display content when we are in editing mode or has error%>
                             <textarea class="<%= validationErrors.find(el => el.param === 'content') ? 'invalid' : '' %>"
                                 id="postText" name="content" rows="5"><% if (editing || hasError) { %><%=post.content%><% } %></textarea>
                         </div>
+
+                        <% if (editing) { %>
+                        <label></label>
+                        <p>Jos et halua vaihtaa kuvaa, et tarvitse valitse valita kuva</p>
+                        <% } %>
                         
                         <label for="image">Kuva*</label>
                         <div class="" >
-                            <input id="image" type="file" name="image" value="<% if (editing || hasError) { %><%=post.imageName%><% } %>">
+                            <%# Tried to display image name when we are in editing mode or has error%>
+                            <%# But it did not work %>
+                            <input id="image" type="file" name="image" value="<% if (editing || hasError) { %><%=(post.imageName) ? post.imageName : "" %><% } %>">
                         </div>
-                        
+                        <%# create an hidden input to store post id 
+                        that will be sent to the server in the body object %>
                         <% if (editing) { %>
                             <input type="hidden" name="postId" value="<%= post.id %>">
                         <% } %>
+                        <%# pass _csrf to name attribute and csrfToken to value of hidden input to be send with req %>
                         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                         <button class="button-green button login-button" type="submit">
                             <% if (editing) { %> Päivitä ilmoitus <% } else { %>Jätä ilmoitus <% } %>

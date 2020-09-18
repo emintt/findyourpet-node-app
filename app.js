@@ -17,6 +17,7 @@ const app = express();
 const store = new SequelizeStore({
   db: sequelize
 });
+// csrf() use session as default
 const csrfProtection = csrf(); 
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -78,8 +79,10 @@ app.use(
     store: store
   })
 );
+// this must be after session middleware
 app.use(csrfProtection);
 app.use(flash());
+// pass data to view                                                                                 
 app.use((req, res, next) => {
   res.locals.isAuthenticated = req.session.isLoggedIn;
   res.locals.csrfToken = req.csrfToken();
@@ -105,6 +108,7 @@ app.use((req, res, next) => {
     });
 });
 
+// add /admin in the beginning of all adminRoutes
 app.use('/admin', adminRoutes);
 app.use(webRoutes);
 app.use(authRoutes);
@@ -113,13 +117,13 @@ app.get('/500', errorController.get500);
 
 app.use(errorController.get404);
 
-app.use((error, req, res, next) => {
-  res.status(500).render('500', { 
-  pageTitle: 'Error',
-  isAuthenticated: req.session.isLoggedIn,
-  memberName: req.session.member.name
-  });
-});
+// app.use((error, req, res, next) => {
+//   res.status(500).render('500', { 
+//   pageTitle: 'Error',
+//   isAuthenticated: req.session.isLoggedIn,
+//   memberName: req.session.member.name
+//   });
+// });
 
 Region.hasMany(City, { foreignKey: { name: 'regionName', allowNull: false } });
 City.belongsTo(Region, { foreignKey: { name: 'regionName', allowNull: false } });

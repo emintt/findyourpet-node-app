@@ -25,6 +25,7 @@ router.post(
         })
           .then(memberInfo => {
             if (memberInfo) {
+              // throw error inside of Promise.reject call
               return Promise.reject('Sähköposti on jo olemassa, valitse toinen.');
             }
           })

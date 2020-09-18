@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-
+// for delete image
 const deleteFile = ( filePath ) => {
   fs.unlink(filePath, (err) => {
     if (err) {

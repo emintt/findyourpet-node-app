@@ -2,17 +2,20 @@
 </head>
 
 <body>
+  <%# controllers/web -> getPost  %>
   <div class="container">
     <%- include('../includes/navigation.ejs') %>
     <div class="page-container">
       <div class="detail-container search-form">
         <div class="detail-image-container">
+          <%# load image with imageUrl attribute of images[0] (images: array of object that got through post)  %>
           <img class="detail-image" src="/<%=post.images[0].imageUrl%>" alt="<%=post.title%>">
         </div>
         <div class="detail-info">
           <div class="detail-info-heading">
             <h2><%= post.title %></h2>
           </div>
+          <%# display post detail from fetched data  %>
           <div class="detail-info-content">
             <div class="detail-info-1">
               <p>Ilmoitus tyyppi: <%= post.postType.name %></p>
@@ -25,7 +28,7 @@
               <p>Ilmoitus jätetty: <%= post.createdAt %></p>
             </div> 
           </div> 
-        </div>
+        </div> 
         <div class="detail-content">
           <p><%= post.content %></p>
         </div>

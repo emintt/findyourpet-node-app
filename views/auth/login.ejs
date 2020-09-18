@@ -1,12 +1,13 @@
 <%- include('../includes/head.ejs') %>
 </head>
-
+ 
 <body>
     <div class="container"> 
         <%- include('../includes/navigation.ejs') %>
         <div class="page-container">
             <div class="login-form-container"> 
                 <h1>Kirjaudu sisään</h1>
+                <%# Display flash error and success message if we have any%>
                 <% if(errorMessage) { %>
                 <div class="user-message user-message-error"><%= errorMessage %></div>
                 <% } %>
@@ -17,15 +18,20 @@
                     <div class="login-module">
                         <div class="text-field base">
                             <label for="email">Sähköpostiosoite</label>
+                            <%# Add class invalid if validation error found %>
+                            <%# Display old user input email value %>
                             <input class="<%= validationErrors.find(el => el.param === 'email') ? 'invalid' : '' %>"
                                 id="email" type="text" name="email" placeholder= "" value="<%= oldInput.email %>">
                         </div>
                         <div class="text-field base">
                             <label for="password">Salasana</label>
+                            <%# Add class invalid if validation error found %>
+                            <%# Display old user input password value %>
                             <input class="<%= validationErrors.find(el => el.param === 'password') ? 'invalid' : '' %>"
                                 id="password" type="password" name="password" placeholder= "" value="<%= oldInput.password %>">
                         </div>
                         <div class="search-button base">
+                            <%# pass _csrf to name attribute and csrfToken to value of hidden input to be send with req %>
                             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                             <button class="button-green button login-button" type="submit">Kiraudu sisään</button>   
                         </div>

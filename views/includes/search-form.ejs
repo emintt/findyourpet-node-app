@@ -1,26 +1,27 @@
 <div class="search-form">
   <div class="form-container"> 
-      <form method="POST" action="loggedresults.html" class="dog-search"> 
-          <div class="search-module">
+      <form method="POST" action="/search-posts" class="dog-search"> 
+          <div class="search-module"> 
               <div class="search-location text-field base">
-                  <input id="location" type="text" name="location" placeholder= "Postinumero">
+                  <input id="location" type="text" name="postcode" placeholder= "Postinumero">
               </div>
               <div class="filterone text-field dropdown base">
-                  <select>
-                      <option  value="kaikki">Kaikki ilmoitustyypit</option>
-                      <option value="loyty">Löydetty lemmikit</option>
-                      <option value="kadoneet">Kadonneet lemmikit</option>
+                  <select name="postTypeId">
+                      <option  value="">Kaikki ilmoitustyypit</option>
+                      <option value="1">Löydetty lemmikit</option>
+                      <option value="2">Kadonneet lemmikit</option>
+                      <option value="3">Havainut lemmikit</option>
                   </select>
-              </div>
+              </div> 
               <div class="search-pettype base">
-                  <label class="radio-container"><input type="radio" name="pettype" value="koira">Koira</label>
-                  <label class="radio-container"><input checked="checked" type="radio" name="pettype" value="kissa">Kissa</label>
-                  <label class="radio-container"><input type="radio" name="pettype" value="muu">Muu lemmikki</label>
+                  <label class="radio-container"><input type="radio" name="petTypeId" value="1">Koira</label>
+                  <label class="radio-container"><input  type="radio" name="petTypeId" value="2">Kissa</label>
+                  <label class="radio-container"><input type="radio" name="petTypeId" value="3">Muu lemmikki</label>
               </div>
               <div class="search-gender base">
-                  <label class="radio-container"><input type="radio" name="gender" value="uros">Uros</label>
-                  <label class="radio-container"><input type="radio" name="gender" value="naaras">Naaras</label>
-                  <label class="radio-container"><input checked="checked" type="radio" name="gender" value="kaikki sukupuolet">Kaikki Sukupuolet</label>
+                  <label class="radio-container"><input type="radio" name="petGenderId" value="1">Uros</label>
+                  <label class="radio-container"><input type="radio" name="petGenderId" value="2">Naaras</label>
+                  <label class="radio-container"><input type="radio" name="petGenderId" value="3">Tuntematon</label>
               </div>
               <div class="search-button base">
                     <input type="hidden" name="_csrf" value="<%= csrfToken %>">

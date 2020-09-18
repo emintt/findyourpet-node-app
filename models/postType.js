@@ -7,7 +7,8 @@ const PostType = sequelize.define('postType', {
     type: Sequelize.INTEGER,
     autoIncrement: true,
     allowNull: false,
-    primaryKey: true
+    primaryKey: true,
+    unique: true
   },
   name: {
     type: Sequelize.STRING(30),

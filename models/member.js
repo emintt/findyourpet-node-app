@@ -11,7 +11,8 @@ const Member = sequelize.define('member', {
   },
   email: {
     type: Sequelize.STRING(350),
-    allowNull: false
+    allowNull: false,
+    unique: true
   },
   password: {
     type: Sequelize.STRING,

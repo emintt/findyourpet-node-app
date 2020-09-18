@@ -7,25 +7,32 @@
         <div class="page-container">
             <div class="login-form-container"> 
                 <h1>Luo tili</h1>
+                <%# catch error message from flash package %>
                 <% if(errorMessage) { %>
                     
                     <div class="user-message user-message-error"><%= errorMessage %></div>
                     
-                <% } %>
+                <% } %> 
                 <form method="post" action="/signup" novalidate> 
                     <div class="login-module">
                         <div class="text-field base ">
                             <label for="name">Sinun nimi*</label>
+                            <%# Add class invalid if validation error found %>
+                            <%# Display old user input name value %>
                             <input class="<%= validationErrors.find(el => el.param === 'name') ? 'invalid' : '' %>"
                                 id="name" type="text" name="name" placeholder= "" value="<%= oldInput.name %>">
                         </div>
                         <div class="text-field base">
                             <label for="email">Sähköpostiosoite*</label>
+                            <%# Add class invalid if validation error found %>
+                            <%# Display old user input email value %>
                             <input class="<%= validationErrors.find(el => el.param === 'email') ? 'invalid' : '' %>"
                                 id="email" type="email" name="email" placeholder= "" value="<%= oldInput.email %>">
                         </div>
                         <div class="text-field base">
                           <label for="phoneNumber">Puhelinnumero*</label>
+                          <%# Add class invalid if validation error found %>
+                            <%# Display old user input phoneNumber value %>
                           <input class="<%= validationErrors.find(el => el.param === 'phoneNumber') ? 'invalid' : '' %>"
                             id="phone" type="text" name="phoneNumber" placeholder= "" value="<%= oldInput.phoneNumber %>">
                       </div>

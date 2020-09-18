@@ -12,9 +12,10 @@ const Member = require('../models/member');
 
 
 const sequelize = require('../util/database');
+// delete file helper
 const fileHelper = require('../util/file');
 
-
+// controller of /admin/add-post Get method
 exports.getAddPost = (req, res, next) => {
   const postTypes = PostType.findAll();
   const petTypes = PetType.findAll();
@@ -22,6 +23,7 @@ exports.getAddPost = (req, res, next) => {
   const cities = City.findAll({
     order: [['name', 'ASC']]
   });
+  // Destructuring promise, that take an array of promises
   Promise.all([postTypes, petTypes, petGenders, cities])
     .then(([postTypes, petTypes, petGenders, cities]) => {
       console.log(JSON.stringify(petGenders));
@@ -44,7 +46,9 @@ exports.getAddPost = (req, res, next) => {
     });
 } 
 
+// POST request from /admin/add-post
 exports.postAddPost = (req, res, next) => {
+  // get all the user inputs from incoming request (by its 'name' attribute on view)
   const title = req.body.title;
   const content = req.body.content;
   const inputPetDateString = req.body.petDate;
@@ -54,9 +58,12 @@ exports.postAddPost = (req, res, next) => {
   const postcode = req.body.postcode; 
   const postTypeId = req.body.postTypeId;
   const petTypeId = req.body.petTypeId;
+
   const image = req.file;   
+  // use moment to parse date and format it to save to database
   const petDate = moment.utc(inputPetDateString, "DD/MM/YYYY").format("YYYY-MM-DD");
   
+  // collect all errors from express-validator
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.log(image);
@@ -67,17 +74,19 @@ exports.postAddPost = (req, res, next) => {
     const cities = City.findAll({
       order: [['name', 'ASC']]
     });
+    // return to stop node to process more
     return Promise.all([postTypes, petTypes, petGenders, cities])
       .then(([postTypes, petTypes, petGenders, cities]) => {
         
         return res.status(422).render('admin/edit-post', {
           pageTitle: 'Add post',
-          editing: false,
+          editing: false, 
           hasError: true,
           postTypes: postTypes,
           petTypes: petTypes,
           petGenders: petGenders,
           cities: cities,
+          // pass all user inputs to view 
           post: {
             title: title,
             content: content,
@@ -86,9 +95,9 @@ exports.postAddPost = (req, res, next) => {
             petGenderId: petGenderId,
             postcode: postcode,
             postcodeArea: {cityName: cityName},
-            postTypeId: postTypeId,
+            postTypeId: postTypeId, 
             petTypeId: petTypeId,
-            imageName: image.originalname
+            //imageName: image.originalname 
             //images: [{imageUrl: imageUrl}]
           },
           errorMessage: errors.array()[0].msg,
@@ -99,7 +108,9 @@ exports.postAddPost = (req, res, next) => {
         console.log(err);
       });
   }
+  // if an image is not set, multer may declined the incoming file
   if (!image) {
+    // load all needed data to send to view
     const postTypes = PostType.findAll();
     const petTypes = PetType.findAll();
     const petGenders = PetGender.findAll();
@@ -137,6 +148,8 @@ exports.postAddPost = (req, res, next) => {
         console.log(err);
       });
   }
+  // now we sure that we had an image
+  // get the path of image to save to database
   const imageUrl = image.path;
   //console.log(req.session.member instanceof Member); -> false
   // to create post is a short cut of build + save
@@ -153,7 +166,6 @@ exports.postAddPost = (req, res, next) => {
     })
     .then(post => {
       console.log('Post Created');
-
       post.createImage({
         imageUrl: imageUrl,
         postId: post.id
@@ -171,8 +183,9 @@ exports.postAddPost = (req, res, next) => {
     });
 }
 
+// GET request to /admin/edit-post
 exports.getEditPost = (req, res, next) => {
-  const editMode = req.query.edit; //in url admin/edit-post?edit=true
+  const editMode = req.query.edit; //in url will be admin/edit-post?edit=true
   if (!editMode) {
     return res.redirect('/');
   }
@@ -187,12 +200,14 @@ exports.getEditPost = (req, res, next) => {
       {model: Image, attributes: ['imageUrl']}
     ]
   });
+  // fetch all needed data from database
   const postTypes = PostType.findAll();
   const petTypes = PetType.findAll();
   const petGenders = PetGender.findAll();
   const cities = City.findAll({
     order: [['name', 'ASC']]
   });
+  // get all promises in an array
   Promise.all([post, postTypes, petTypes, petGenders, cities])
     .then(([post, postTypes, petTypes, petGenders, cities]) => {
       if (!post) {
@@ -223,7 +238,10 @@ exports.getEditPost = (req, res, next) => {
       return next(error);
     });
 }
+
+// POST request for /admin/edit-post page
 exports.postEditPost = (req, res, next) => {
+  // store all user input from incoming request
   const postId = req.body.postId;
   const updatedTitle = req.body.title;
   const updatedContent = req.body.content;
@@ -236,7 +254,9 @@ exports.postEditPost = (req, res, next) => {
 
   const updatedCityName = req.body.cityId;
   const image = req.file;
+  // parse date from input and format to store to database
   const updatedPetDate = moment.utc(inputPetDateString, "DD/MM/YYYY").format("YYYY-MM-DD");
+  // collect all errors of express-validator
   const errors = validationResult(req); 
   if (!errors.isEmpty()) {
     console.log(errors.array());
@@ -248,7 +268,7 @@ exports.postEditPost = (req, res, next) => {
     });
     return Promise.all([postTypes, petTypes, petGenders, cities])
       .then(([postTypes, petTypes, petGenders, cities]) => {
-        
+        // render edit-post again with all needed data and display old user inputs data
         return res.status(422).render('admin/edit-post', {
           pageTitle: 'Edit post',
           editing: true,
@@ -257,6 +277,7 @@ exports.postEditPost = (req, res, next) => {
           petTypes: petTypes,
           petGenders: petGenders,
           cities: cities,
+          // pass the post data which include all user input data to the view.
           post: {
             title: updatedTitle,
             content: updatedContent,
@@ -268,9 +289,11 @@ exports.postEditPost = (req, res, next) => {
             postTypeId: updatedPostTypeId,
             petTypeId: updatedPetTypeId,
             //images: [{imageUrl: updatedImageUrl}],
+            
             id: postId
           },
           errorMessage: errors.array()[0].msg,
+          // pull out array of error from express-validator to view
           validationErrors: errors.array()
         });
       })
@@ -314,9 +337,12 @@ exports.postEditPost = (req, res, next) => {
     });
 } 
 
+// GET request for /admin/posts page (omat ilmoitukset)
 exports.getPosts = (req, res, next) => {
+  // find all posts of specific member
   Post.findAll({
     where: {memberId: req.session.member.id},
+    // include one new attribute as a fomartted createdAt to display on view
     attributes: { 
       include: [
         [sequelize.fn('DATE_FORMAT', sequelize.col('post.created_at'), '%d.%m.%Y'), 'createdAt'], 
@@ -324,6 +350,7 @@ exports.getPosts = (req, res, next) => {
       ]
     },
     order: [['createdAt', 'desc']],
+    // get name attributes of related table to display 
     include: [
       {model: PostType, attributes: ['name']},
       {model: PetType, attributes: ['name']},
@@ -346,7 +373,9 @@ exports.getPosts = (req, res, next) => {
     });
 }
 
+// POST request from /admin/delete-post form on admin/posts view
 exports.postDeletePost = (req, res, next) => {
+  // get postId from incoming request
   const postId = req.body.postId;
   console.log(postId);
   Post.findByPk(postId)

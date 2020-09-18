@@ -8,11 +8,14 @@
       <%- include('../includes/navigation-2.ejs') %>
       <div class="pets">
         <% if (posts.length > 0) { %>
+          <%# Näyttää omat ilmoitukset lohkona %>
           <% for (let post of posts) { %>
             <div class="media tile">
               <a href="/posts/<%= post.id %>" >
+                <%# 1 post -> n images, images is an array of objects%>
                 <img class="media-image" src="/<%= post.images[0].imageUrl %>" alt="<%=post.title%>>">
                 <div class="media-body">
+                  <%# Get name attributes from post related table, which are fetched on getPosts controller%>
                   <p><%= post.petType.name %></p><br>
                   <p><%= post.postcodeArea.name%>, <%= post.postcodeArea.cityName%></p><br>
                   <p><%= post.postType.name%> <%= post.petDate%></p>
