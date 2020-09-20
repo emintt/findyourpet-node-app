@@ -5,6 +5,7 @@ const sequelize = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.passw
   dialect: dbConfig.dialect, 
   host: dbConfig.host,
   timezone: dbConfig.timezone,
+  logging: dbConfig.logging,
   define: {
     freezeTableName: true,
     timestamps: false,

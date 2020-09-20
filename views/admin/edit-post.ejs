@@ -127,6 +127,7 @@
                         <div class="" >
                             <%# Tried to display image name when we are in editing mode or has error%>
                             <%# But it did not work %>
+                            <%# type="file" to work with file %>
                             <input id="image" type="file" name="image" value="<% if (editing || hasError) { %><%=(post.imageName) ? post.imageName : "" %><% } %>">
                         </div>
                         <%# create an hidden input to store post id 

@@ -4,7 +4,8 @@ const db =  {
   password: 'Caigivay1',
   database: 'findyourpetdb',
   dialect: 'mysql',
-  timezone: '+03:00'
+  timezone: '+03:00',
+  logging: false
 };
 
 module.exports = db;

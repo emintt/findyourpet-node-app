@@ -10,24 +10,30 @@ const csrf = require('csurf');
 const flash = require('connect-flash');
 const multer = require('multer');
 
-// initalize sequelize with session store
+// initalize sequelize with session store to store session in database
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
 const app = express();
+// initilize a new store in a constant then pass database requirements to it
 const store = new SequelizeStore({
   db: sequelize
 });
 // csrf() use session as default
 const csrfProtection = csrf(); 
+
+// configure file storage for image
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
+    // it is ok to store null (when error)
     cb(null, 'images');
   },
+  // concatenate name of image to avoid image with the same name
   filename: (req, file, cb) => {
     cb(null, new Date().toISOString() + '-'+ file.originalname);
   }
 });
 
+// file filter for image
 const fileFilter = (req, file, cb) => {
    if (
      file.mimetype === 'image/png' ||
@@ -68,6 +74,7 @@ const Region = require('./models/region');
 
 
 app.use(bodyParser.urlencoded({ extended: false }));
+//use multer as middleware,we expect just 1 file, image (name attribute on view)
 app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single('image'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/images', express.static(path.join(__dirname, 'images')));
@@ -76,6 +83,7 @@ app.use(
     secret: 'my secret', 
     resave: false, 
     saveUninitialized: false,
+    // add store option to where we used session, session db will be store in there
     store: store
   })
 );
@@ -90,6 +98,7 @@ app.use((req, res, next) => {
   next();
 });
 
+// member middleware
 app.use((req, res, next) => {
   if (!req.session.member) {
     return next();
@@ -117,14 +126,15 @@ app.get('/500', errorController.get500);
 
 app.use(errorController.get404);
 
-// app.use((error, req, res, next) => {
-//   res.status(500).render('500', { 
-//   pageTitle: 'Error',
-//   isAuthenticated: req.session.isLoggedIn,
-//   memberName: req.session.member.name
-//   });
-// });
+app.use((error, req, res, next) => {
+  res.status(500).render('500', { 
+  pageTitle: 'Error',
+  isAuthenticated: req.session.isLoggedIn,
+  memberName: req.session.member.name
+  });
+});
 
+// add association between models
 Region.hasMany(City, { foreignKey: { name: 'regionName', allowNull: false } });
 City.belongsTo(Region, { foreignKey: { name: 'regionName', allowNull: false } });
 
@@ -155,11 +165,12 @@ Message.belongsTo(Post, { foreignKey: { allowNull: false }});
 Post.hasMany(Image, { foreignKey: { allowNull: false }, onDelete: 'CASCADE'}); // delete post -> delete image
 Image.belongsTo(Post, { foreignKey: { allowNull: false }});
 
-
+// sync models to database
 sequelize
   .sync()
   .then(result => {
     app.listen(3000);
+    console.log('findyourpet app listening at port 3000');
   })
   .catch(err => {
     console.log(err);

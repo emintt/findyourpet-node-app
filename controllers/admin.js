@@ -383,6 +383,7 @@ exports.postDeletePost = (req, res, next) => {
       if (!post) {
         return next(new Error('Post not found'));
       }
+      // delete image of post
       post.getImages()
         .then(images => {
           fileHelper.deleteFile(images[0].imageUrl);
